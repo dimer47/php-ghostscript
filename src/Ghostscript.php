@@ -6,22 +6,22 @@ use Exception;
 
 class Ghostscript
 {
-    /** @var string Ghostscript temporary prefix filename */
+    /** @var string */
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
-    /** @var string Ghostscript convert PDF command */
+    /** @var string */
     protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%s %s';
 
-    /** @var string Ghostscript binary absolute path */
+    /** @var string */
     protected $binPath = '';
 
-    /** @var string Temporary save file absolute path */
+    /** @var string */
     protected $tmpPath = '';
 
-    /** @var array Ghostscript options */
+    /** @var array */
     protected $options = [];
 
-    /** @var string Error message */
+    /** @var string */
     protected $error = '';
 
     /**
@@ -56,9 +56,7 @@ class Ghostscript
      */
     protected function convertPathSeparator(string $path): string
     {
-        $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-
-        return $path;
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 
     /**
@@ -84,7 +82,6 @@ class Ghostscript
         $deleteSeconds = $days * 86400;
         $tmpPath = $this->getTmpPath();
         $files = scandir($tmpPath);
-
         foreach ($files as $file) {
             if (in_array($file, ['.', '..'])) {
                 continue;
@@ -94,11 +91,9 @@ class Ghostscript
             if (is_file($path)) {
                 $createdAt = filemtime($path);
                 $isExpired = time() - $createdAt > $deleteSeconds;
-
                 if ($isForceDelete === true || $isExpired === true) {
                     $pathInfo = pathinfo($path);
                     $filename = $pathInfo['filename'];
-
                     if (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) {
                         unlink($path);
                     }
@@ -127,7 +122,6 @@ class Ghostscript
             if (is_file($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
-
                 (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $count++;
             }
         }
@@ -159,9 +153,7 @@ class Ghostscript
      */
     public function setBinPath(string $binPath): void
     {
-        $binPath = $this->convertPathSeparator($binPath);
-
-        $this->binPath = $binPath;
+        $this->binPath = $this->convertPathSeparator($binPath);
     }
 
     /**
@@ -183,9 +175,7 @@ class Ghostscript
      */
     public function setTmpPath(string $tmpPath): void
     {
-        $tmpPath = $this->convertPathSeparator($tmpPath);
-
-        $this->tmpPath = $tmpPath;
+        $this->tmpPath = $this->convertPathSeparator($tmpPath);
     }
 
     /**
@@ -276,7 +266,6 @@ class Ghostscript
     public function guess(string $file): float
     {
         $version = 0;
-
         if (!is_file($file)) {
             $this->setError($file . ' not exists.');
 
@@ -287,7 +276,6 @@ class Ghostscript
         fseek($fo, 0);
         preg_match('/%PDF-(\d\.\d)/', fread($fo, 1024), $match);
         fclose($fo);
-
         $version = (float)($match[1] ?? $version);
 
         return $version;
@@ -306,7 +294,6 @@ class Ghostscript
     public function convert(string $file, float $newVersion): string
     {
         $this->validateBinPath();
-
         $file = $this->convertPathSeparator($file);
         if (!is_file($file)) {
             $this->setError('Failed to convert, ' . $file . ' not exists.');
