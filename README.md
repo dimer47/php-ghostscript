@@ -5,9 +5,7 @@
 
 ### Intro
 
-- Merge all PDF file by ghostscript.
-- Guess and convert PDF file version by ghostscript.
-- Fix FPDF error: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+You can Merge all PDF file or Guess and convert PDF file version. Fix FPDF error by ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 
@@ -49,11 +47,11 @@ echo 'New file path: ' . $file . PHP_EOL;
 
 // Merge all pdf.
 $files = [
-    __DIR__ . '/../files/part_1.pdf',
-    __DIR__ . '/../files/part_2.pdf',
-    __DIR__ . '/../files/part_3.pdf'
+    '/files/part_1.pdf',
+    '/files/part_2.pdf',
+    '/files/part_3.pdf'
 ];
-$file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+$file = $ghostscript->merge('/files/merge.pdf', $files);
 echo 'Merge file path: ' . $file . PHP_EOL;
 
 // Delete temporary file.
