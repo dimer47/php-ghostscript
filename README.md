@@ -5,7 +5,7 @@
 
 ### Intro
 
-You can Merge all PDF file or Guess and convert PDF file version. Fix FPDF error by ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+You can merge all PDF file or guess and convert PDF file version. Fix FPDF error by ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 
@@ -59,7 +59,7 @@ $ghostscript->deleteTmpFile();
 
 // Get error message.
 $error = $ghostscript->getError();
-echo 'error = ' . $error;
+echo 'Error = ' . $error . PHP_EOL;
 ```
 
 ## Testing
