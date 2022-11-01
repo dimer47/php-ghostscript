@@ -1,16 +1,19 @@
 # Ghostscript
+
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml)
 [![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
 
 Use ghostscript guess and convert PDF file version for PHP. Fix FPDF error: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
+
 This library has the following requirements:
 
- - PHP 7.1+
- - Ghostscript 9.50+
+- PHP 7.1+
+- Ghostscript 9.50+
 
 ## Installation
+
 Require the package via Composer:
 
 ```bash
@@ -18,42 +21,45 @@ composer require ordinary9843/ghostscript
 ```
 
 ## Usage
+
 This is a simple usage example how to guess or convert PDF.
 
 ```php
 <?php
-require __DIR__ . '/../vendor/autoload.php';
+require '/vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 
 $binPath = '/usr/bin/gs';
 $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
-$file = __DIR__ . '../files/test.pdf';
+$file = '/files/test.pdf';
 
-// Guess PDF version
+// Guess the pdf version.
 $version = $ghostscript->guess($file);
-echo 'Version is: ' . $version . '<br />';
+echo 'Version is: ' . $version . PHP_EOL;
 
-// Convert PDF version
+// Convert the pdf version.
 $newVersion = 1.4;
 $file = $ghostscript->convert($file, $newVersion);
-echo 'New file path: ' . $file . '<br />';
+echo 'New file path: ' . $file . PHP_EOL;
 
-// Can also be delete temporary file
+// Delete temporary file.
 $ghostscript->deleteTmpFile();
 
-// Get error message
+// Get error message.
 $error = $ghostscript->getError();
 echo 'error = ' . $error;
 ```
 
 ## Testing
+
 ```bash
 composer test
 ```
 
 ## Licenses
+
 (The [MIT](http://www.opensource.org/licenses/mit-license.php) License)
 
 Copyright &copy; [Jerry Chen](https://ordinary9843.medium.com/)

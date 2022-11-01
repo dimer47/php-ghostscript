@@ -14,33 +14,28 @@ class GhostscriptTest extends TestCase
     const NEW_VERSION = 1.5;
 
     /** @var string */
-    protected $testFile = __DIR__ . '/../files/test.pdf';
+    const TEST_FILE = __DIR__ . '/../files/test.pdf';
 
     /** @var string */
-    protected $fakeFile = __DIR__ . '/../files/fake.pdf';
+    const FAKE_FILE = __DIR__ . '/../files/fake.pdf';
 
     /** @var string */
-    protected $binPath = '';
+    protected $binPath = '/usr/bin/gs';
 
     /** @var string */
     protected $tmpPath = '';
 
     /**
-     * This method is called before each test
-     * 
      * @return void
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->binPath = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'C:\gs\gs9.55.0\bin\gswin64c.exe' : '/usr/bin/gs';
         $this->tmpPath = sys_get_temp_dir();
     }
 
     /**
-     * Test Ghostscript binary absolute path
-     * 
      * @return void
      */
     public function testBinPath(): void
@@ -55,8 +50,6 @@ class GhostscriptTest extends TestCase
     }
 
     /**
-     * Test temporary save file absolute path
-     * 
      * @return void
      */
     public function testTmpPath(): void
@@ -71,42 +64,38 @@ class GhostscriptTest extends TestCase
     }
 
     /**
-     * Test guess PDF version.
-     * 
      * @return void
      */
     public function testGuess(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
-        $version = $ghostscript->guess($this->testFile);
+        $version = $ghostscript->guess(self::TEST_FILE);
         $this->assertContains($version, [
             self::OLD_VERSION,
             self::NEW_VERSION
         ]);
 
-        $version = $ghostscript->guess($this->fakeFile);
+        $version = $ghostscript->guess(self::FAKE_FILE);
         $error = $ghostscript->getError();
         $this->assertEquals($version, 0);
         $this->assertNotEquals($error, '');
     }
 
     /**
-     * Test convert PDF version
-     * 
      * @return void
      */
     public function testConvert(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
-        $ghostscript->convert($this->testFile, self::NEW_VERSION);
-        $version = $ghostscript->guess($this->testFile);
+        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
+        $version = $ghostscript->guess(self::TEST_FILE);
         $this->assertEquals($version, self::NEW_VERSION);
 
-        $ghostscript->convert($this->testFile, self::OLD_VERSION);
-        $version = $ghostscript->guess($this->testFile);
+        $ghostscript->convert(self::TEST_FILE, self::OLD_VERSION);
+        $version = $ghostscript->guess(self::TEST_FILE);
         $this->assertEquals($version, self::OLD_VERSION);
 
-        $ghostscript->convert($this->fakeFile, self::NEW_VERSION);
+        $ghostscript->convert(self::FAKE_FILE, self::NEW_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
@@ -114,7 +103,7 @@ class GhostscriptTest extends TestCase
             '-dPDFSETTINGS' => '/screen',
             '-dNOPAUSE'
         ]);
-        $ghostscript->convert($this->testFile, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
@@ -122,18 +111,16 @@ class GhostscriptTest extends TestCase
         $ghostscript->setOptions([
             '-dCompatibilityLevel=test'
         ]);
-        $ghostscript->convert($this->testFile, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
         $this->expectException('Exception');
         $ghostscript->setBinPath('');
-        $ghostscript->convert($this->testFile, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
     }
 
     /**
-     * Test delete temporary PDF
-     * 
      * @return void
      */
     public function testDeleteTmpFile(): void

@@ -10,7 +10,7 @@ class Ghostscript
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
     /** @var string */
-    protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%s %s';
+    const CONVERT_CONVERT = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dCompatibilityLevel=%s -sOutputFile=%s %s';
 
     /** @var string */
     protected $binPath = '';
@@ -25,8 +25,6 @@ class Ghostscript
     protected $error = '';
 
     /**
-     * Initialize
-     * 
      * @param string $binPath
      * @param string $tmpPath
      */
@@ -48,8 +46,6 @@ class Ghostscript
     }
 
     /**
-     * Convert file path separator
-     * 
      * @param string $path
      * 
      * @return string
@@ -60,8 +56,6 @@ class Ghostscript
     }
 
     /**
-     * Generate temporary file path
-     * 
      * @return string
      */
     private function generateTmpFile(): string
@@ -70,8 +64,6 @@ class Ghostscript
     }
 
     /**
-     * Delete temporary file
-     * 
      * @param bool $isForceDelete
      * @param int $days
      * 
@@ -103,15 +95,12 @@ class Ghostscript
     }
 
     /**
-     * Get temporary file count
-     * 
      * @return int
      */
     public function getTmpFileCount(): int
     {
         $tmpPath = $this->getTmpPath();
         $files = scandir($tmpPath);
-
         $count = 0;
         foreach ($files as $file) {
             if (in_array($file, ['.', '..'])) {
@@ -130,8 +119,6 @@ class Ghostscript
     }
 
     /**
-     * Validate ghostscript binary path
-     * 
      * @return void
      * 
      * @throws Exception
@@ -145,8 +132,6 @@ class Ghostscript
     }
 
     /**
-     * Set ghostscript binary absolute path
-     * 
      * @param string $binPath
      * 
      * @return void
@@ -157,8 +142,6 @@ class Ghostscript
     }
 
     /**
-     * Get ghostscript binary absolute path
-     * 
      * @return string
      */
     public function getBinPath(): string
@@ -167,8 +150,6 @@ class Ghostscript
     }
 
     /**
-     * Set temporary save file absolute path
-     * 
      * @param string $tmpPath
      * 
      * @return void
@@ -179,8 +160,6 @@ class Ghostscript
     }
 
     /**
-     * Get temporary save file absolute path
-     * 
      * @return string
      */
     public function getTmpPath(): string
@@ -189,8 +168,6 @@ class Ghostscript
     }
 
     /**
-     * Get execute Ghostscript options
-     * 
      * @param array $options
      * 
      * @return void
@@ -201,8 +178,6 @@ class Ghostscript
     }
 
     /**
-     * Get execute Ghostscript options
-     * 
      * @return array
      */
     public function getOptions(): array
@@ -211,8 +186,6 @@ class Ghostscript
     }
 
     /**
-     * Get error message
-     * 
      * @return string
      */
     public function getError(): string
@@ -221,27 +194,23 @@ class Ghostscript
     }
 
     /**
-     * Set error message
-     * 
      * @return void
      */
     protected function setError(string $error): void
     {
-        $this->error = $error;
+        $this->error = $error . PHP_EOL;
     }
 
     /**
-     * Compose execution command
-     * 
      * @param float $version
      * @param string $tmpFile
      * @param string $file
      * 
      * @return string
      */
-    private function command(float $version, string $tmpFile, string $file): string
+    private function getConvertCommand(float $version, string $tmpFile, string $file): string
     {
-        $command = sprintf($this->command, $this->binPath, $version, $tmpFile, escapeshellarg($file));
+        $command = sprintf(self::CONVERT_CONVERT, $this->binPath, $version, $tmpFile, escapeshellarg($file));
         $options = $this->getOptions();
         if (!empty($options)) {
             foreach ($options as $key => $value) {
@@ -257,8 +226,6 @@ class Ghostscript
     }
 
     /**
-     * Guess PDF version
-     * 
      * @param string $file
      * 
      * @return float
@@ -267,7 +234,7 @@ class Ghostscript
     {
         $version = 0;
         if (!is_file($file)) {
-            $this->setError($file . ' not exists.');
+            $this->setError($file . ' is not exist.');
 
             return $version;
         }
@@ -282,8 +249,6 @@ class Ghostscript
     }
 
     /**
-     * Convert PDF version
-     * 
      * @param string $file
      * @param float $newVersion
      * 
@@ -296,13 +261,13 @@ class Ghostscript
         $this->validateBinPath();
         $file = $this->convertPathSeparator($file);
         if (!is_file($file)) {
-            $this->setError('Failed to convert, ' . $file . ' not exists.');
+            $this->setError('Failed to convert, ' . $file . ' is not exist.');
 
             return $file;
         }
 
         $tmpFile = $this->generateTmpFile();
-        $command = $this->command($newVersion, $tmpFile, $file);
+        $command = $this->getConvertCommand($newVersion, $tmpFile, $file);
         $output = shell_exec($command);
         if ($output) {
             $this->setError('Failed to convert ' . $file . '. Because ' . $output);
