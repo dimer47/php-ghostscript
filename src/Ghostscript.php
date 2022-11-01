@@ -217,16 +217,7 @@ class Ghostscript
     private function getConvertCommand(string $file, float $version, string $tmpFile): string
     {
         $command = sprintf(self::CONVERT_CONVERT, $this->binPath, $version, $tmpFile, $file);
-        $options = $this->getOptions();
-        if (!empty($options)) {
-            foreach ($options as $key => $value) {
-                if (!is_numeric($key)) {
-                    $command .= ' ' . $key . '=' . $value;
-                } else {
-                    $command .= ' ' . $value;
-                }
-            }
-        }
+        $command = $this->optionsToCommand($command);
 
         return $command;
     }
@@ -240,6 +231,18 @@ class Ghostscript
     private function getMergeCommand(string $file, array $files): string
     {
         $command = sprintf(self::MERGE_CONVERT, $this->binPath, $file, implode(' ', $files));
+        $command = $this->optionsToCommand($command);
+
+        return $command;
+    }
+
+    /**
+     * @param string $command
+     * 
+     * @return string
+     */
+    private function optionsToCommand(string $command): string
+    {
         $options = $this->getOptions();
         if (!empty($options)) {
             foreach ($options as $key => $value) {
