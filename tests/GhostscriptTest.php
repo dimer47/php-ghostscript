@@ -8,16 +8,16 @@ use Ordinary9843\Ghostscript;
 class GhostscriptTest extends TestCase
 {
     /** @var float */
-    const OLD_VERSION = 1.4;
-
-    /** @var float */
-    const NEW_VERSION = 1.5;
+    const TEST_VERSION = 1.5;
 
     /** @var string */
     const TEST_FILE = __DIR__ . '/../files/test.pdf';
 
     /** @var string */
     const FAKE_FILE = __DIR__ . '/../files/fake.pdf';
+
+    /** @var string */
+    const OTHER_FILE = __DIR__ . '/../files/test.txt';
 
     /** @var string */
     protected $binPath = '/usr/bin/gs';
@@ -71,8 +71,8 @@ class GhostscriptTest extends TestCase
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
         $version = $ghostscript->guess(self::TEST_FILE);
         $this->assertContains($version, [
-            self::OLD_VERSION,
-            self::NEW_VERSION
+            Ghostscript::STABLE_VERSION,
+            self::TEST_VERSION
         ]);
 
         $version = $ghostscript->guess(self::FAKE_FILE);
@@ -87,15 +87,15 @@ class GhostscriptTest extends TestCase
     public function testConvert(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
-        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
         $version = $ghostscript->guess(self::TEST_FILE);
-        $this->assertEquals($version, self::NEW_VERSION);
+        $this->assertEquals($version, self::TEST_VERSION);
 
-        $ghostscript->convert(self::TEST_FILE, self::OLD_VERSION);
+        $ghostscript->convert(self::TEST_FILE, Ghostscript::STABLE_VERSION);
         $version = $ghostscript->guess(self::TEST_FILE);
-        $this->assertEquals($version, self::OLD_VERSION);
+        $this->assertEquals($version, Ghostscript::STABLE_VERSION);
 
-        $ghostscript->convert(self::FAKE_FILE, self::NEW_VERSION);
+        $ghostscript->convert(self::FAKE_FILE, self::TEST_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
@@ -103,7 +103,7 @@ class GhostscriptTest extends TestCase
             '-dPDFSETTINGS' => '/screen',
             '-dNOPAUSE'
         ]);
-        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
@@ -111,13 +111,56 @@ class GhostscriptTest extends TestCase
         $ghostscript->setOptions([
             '-dCompatibilityLevel=test'
         ]);
-        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
+        $error = $ghostscript->getError();
+        $this->assertNotEquals($error, '');
+
+        $ghostscript->convert(self::OTHER_FILE, self::TEST_VERSION);
         $error = $ghostscript->getError();
         $this->assertNotEquals($error, '');
 
         $this->expectException('Exception');
         $ghostscript->setBinPath('');
-        $ghostscript->convert(self::TEST_FILE, self::NEW_VERSION);
+        $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
+    }
+
+    /**
+     * @return void
+     */
+    public function testMerge(): void
+    {
+        $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
+        $files = [
+            self::OTHER_FILE,
+            $ghostscript->convert(__DIR__ . '/../files/part_1.pdf', self::TEST_VERSION),
+            __DIR__ . '/../files/part_2.pdf',
+            __DIR__ . '/../files/part_3.pdf',
+            __DIR__ . '/../files/part_4.pdf'
+        ];
+        $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+        $this->assertFileExists($file);
+
+        array_pop($files);
+        $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+        $this->assertFileExists($file);
+
+        $ghostscript->setOptions([
+            '-dPDFSETTINGS' => '/screen'
+        ]);
+        $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+        $error = $ghostscript->getError();
+        $this->assertNotEquals($error, '');
+
+        $ghostscript->setOptions([
+            '-dCompatibilityLevel=test'
+        ]);
+        $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+        $error = $ghostscript->getError();
+        $this->assertNotEquals($error, '');
+
+        if (is_file($file)) {
+            unlink($file);
+        }
     }
 
     /**
@@ -129,5 +172,15 @@ class GhostscriptTest extends TestCase
         $ghostscript->deleteTmpFile(true);
         $tmpFileCount = $ghostscript->getTmpFileCount();
         $this->assertEquals($tmpFileCount, 0);
+    }
+
+    /**
+     * @return void
+     */
+    public function testIsPdf(): void
+    {
+        $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
+        $this->assertTrue($ghostscript->isPdf(self::TEST_FILE));
+        $this->assertFalse($ghostscript->isPdf(self::OTHER_FILE));
     }
 }

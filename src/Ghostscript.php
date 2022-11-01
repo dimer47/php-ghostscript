@@ -13,6 +13,12 @@ class Ghostscript
     const CONVERT_CONVERT = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dCompatibilityLevel=%s -sOutputFile=%s %s';
 
     /** @var string */
+    const MERGE_CONVERT = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -sOUTPUTFILE=%s %s';
+
+    /** @var float */
+    const STABLE_VERSION = 1.4;
+
+    /** @var string */
     protected $binPath = '';
 
     /** @var string */
@@ -198,19 +204,42 @@ class Ghostscript
      */
     protected function setError(string $error): void
     {
-        $this->error = $error . PHP_EOL;
+        $this->error = '[ERROR] ' . $error . PHP_EOL;
     }
 
     /**
+     * @param string $file
      * @param float $version
      * @param string $tmpFile
-     * @param string $file
      * 
      * @return string
      */
-    private function getConvertCommand(float $version, string $tmpFile, string $file): string
+    private function getConvertCommand(string $file, float $version, string $tmpFile): string
     {
-        $command = sprintf(self::CONVERT_CONVERT, $this->binPath, $version, $tmpFile, escapeshellarg($file));
+        $command = sprintf(self::CONVERT_CONVERT, $this->binPath, $version, $tmpFile, $file);
+        $options = $this->getOptions();
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                if (!is_numeric($key)) {
+                    $command .= ' ' . $key . '=' . $value;
+                } else {
+                    $command .= ' ' . $value;
+                }
+            }
+        }
+
+        return $command;
+    }
+
+    /**
+     * @param string $file
+     * @param array $files
+     * 
+     * @return string
+     */
+    private function getMergeCommand(string $file, array $files): string
+    {
+        $command = sprintf(self::MERGE_CONVERT, $this->binPath, $file, implode(' ', $files));
         $options = $this->getOptions();
         if (!empty($options)) {
             foreach ($options as $key => $value) {
@@ -264,10 +293,14 @@ class Ghostscript
             $this->setError('Failed to convert, ' . $file . ' is not exist.');
 
             return $file;
+        } elseif (!$this->isPdf($file)) {
+            $this->setError($file . ' is not pdf.');
+
+            return $file;
         }
 
         $tmpFile = $this->generateTmpFile();
-        $command = $this->getConvertCommand($newVersion, $tmpFile, $file);
+        $command = $this->getConvertCommand($file, $newVersion, $tmpFile);
         $output = shell_exec($command);
         if ($output) {
             $this->setError('Failed to convert ' . $file . '. Because ' . $output);
@@ -278,5 +311,68 @@ class Ghostscript
         copy($tmpFile, $file);
 
         return $file;
+    }
+
+    /**
+     * @param string $file
+     * @param float $newVersion
+     * @param bool $isAutoConvert
+     * 
+     * @return string
+     * 
+     * @throws Exception
+     */
+    public function merge(string $file, array $files, bool $isAutoConvert = true): string
+    {
+        $this->validateBinPath();
+
+        foreach ($files as $key => $value) {
+            $value = $this->convertPathSeparator($value);
+            if (!is_file($value)) {
+                unset($files[$key]);
+                $this->setError('Failed to convert, ' . $value . ' is not exist.');
+                continue;
+            } elseif (!$this->isPdf($value)) {
+                unset($files[$key]);
+                $this->setError($value . ' is not pdf.');
+                continue;
+            }
+
+            if ($isAutoConvert === true) {
+                if ($this->guess($value) !== self::STABLE_VERSION) {
+                    $value = $this->convert($value, self::STABLE_VERSION);
+                }
+            }
+
+            $files[$key] = $value;
+        }
+
+        $command = $this->getMergeCommand($file, $files);
+        $output = shell_exec($command);
+        if ($output) {
+            $this->setError('Failed to convert ' . $file . '. Because ' . $output);
+
+            return $file;
+        }
+
+        return $file;
+    }
+
+    /**
+     * @param string $file
+     * 
+     * @return bool
+     */
+    public function isPdf(string $file): bool
+    {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if (
+            pathinfo($file, PATHINFO_EXTENSION) !== 'pdf' ||
+            finfo_file($finfo, $file) !== 'application/pdf'
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

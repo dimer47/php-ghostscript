@@ -3,7 +3,11 @@
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml)
 [![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
 
-Use ghostscript guess and convert PDF file version for PHP. Fix FPDF error: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+### Intro
+
+- Merge all PDF file by ghostscript.
+- Guess and convert PDF file version by ghostscript.
+- Fix FPDF error: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 
@@ -40,9 +44,17 @@ $version = $ghostscript->guess($file);
 echo 'Version is: ' . $version . PHP_EOL;
 
 // Convert the pdf version.
-$newVersion = 1.4;
-$file = $ghostscript->convert($file, $newVersion);
+$file = $ghostscript->convert($file, Ghostscript::STABLE_VERSION);
 echo 'New file path: ' . $file . PHP_EOL;
+
+// Merge all pdf.
+$files = [
+    __DIR__ . '/../files/part_1.pdf',
+    __DIR__ . '/../files/part_2.pdf',
+    __DIR__ . '/../files/part_3.pdf'
+];
+$file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
+echo 'Merge file path: ' . $file . PHP_EOL;
 
 // Delete temporary file.
 $ghostscript->deleteTmpFile();
