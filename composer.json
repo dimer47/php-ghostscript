@@ -1,6 +1,6 @@
 {
     "name": "ordinary9843/ghostscript",
-    "description": "Use ghostscript guess and convert PDF file version for PHP.",
+    "description": "You can merge all PDF file or guess and convert PDF file version. Fix FPDF error by ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.",
     "type": "library",
     "license": "MIT",
     "authors": [

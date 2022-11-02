@@ -16,7 +16,7 @@ This library has the following requirements:
 
 ## Installation
 
-Require the package via Composer:
+Require the package via composer:
 
 ```bash
 composer require ordinary9843/ghostscript
