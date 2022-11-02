@@ -318,7 +318,7 @@ class Ghostscript
 
     /**
      * @param string $file
-     * @param float $newVersion
+     * @param array $files
      * @param bool $isAutoConvert
      * 
      * @return string
