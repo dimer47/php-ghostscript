@@ -10,10 +10,10 @@ class Ghostscript
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
     /** @var string */
-    const CONVERT_CONVERT = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dCompatibilityLevel=%s -sOutputFile=%s %s';
+    const CONVERT_COMMAND = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dCompatibilityLevel=%s -sOutputFile=%s %s';
 
     /** @var string */
-    const MERGE_CONVERT = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -sOUTPUTFILE=%s %s';
+    const MERGE_COMMAND = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -sOUTPUTFILE=%s %s';
 
     /** @var float */
     const STABLE_VERSION = 1.4;
@@ -216,7 +216,7 @@ class Ghostscript
      */
     private function getConvertCommand(string $file, float $version, string $tmpFile): string
     {
-        $command = sprintf(self::CONVERT_CONVERT, $this->binPath, $version, $tmpFile, $file);
+        $command = sprintf(self::CONVERT_COMMAND, $this->binPath, $version, $tmpFile, $file);
         $command = $this->optionsToCommand($command);
 
         return $command;
@@ -230,7 +230,7 @@ class Ghostscript
      */
     private function getMergeCommand(string $file, array $files): string
     {
-        $command = sprintf(self::MERGE_CONVERT, $this->binPath, $file, implode(' ', $files));
+        $command = sprintf(self::MERGE_COMMAND, $this->binPath, $file, implode(' ', $files));
         $command = $this->optionsToCommand($command);
 
         return $command;
