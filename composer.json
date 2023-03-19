@@ -1,6 +1,6 @@
 {
     "name": "ordinary9843/ghostscript",
-    "description": "Use ghostscript to merge all PDF files or guess and convert PDF file version.",
+    "description": "Use ghostscript to merge all PDF files or guess and convert PDF file version",
     "type": "library",
     "license": "MIT",
     "authors": [
