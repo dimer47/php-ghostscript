@@ -28,38 +28,34 @@ This is a simple usage example how to guess or convert PDF.
 
 ```php
 <?php
-require '/vendor/autoload.php';
+require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 
 $binPath = '/usr/bin/gs';
 $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
-$file = '/files/test.pdf';
+$file = './files/test.pdf';
 
 // Guess the pdf version.
 $version = $ghostscript->guess($file);
-echo 'Version is: ' . $version . PHP_EOL;
 
 // Convert the pdf version.
 $file = $ghostscript->convert($file, Ghostscript::STABLE_VERSION);
-echo 'New file path: ' . $file . PHP_EOL;
 
 // Merge all pdf.
 $files = [
-    '/files/part_1.pdf',
-    '/files/part_2.pdf',
-    '/files/part_3.pdf'
+    './files/part_1.pdf',
+    './files/part_2.pdf',
+    './files/part_3.pdf'
 ];
 $file = $ghostscript->merge('/files/merge.pdf', $files);
-echo 'Merge file path: ' . $file . PHP_EOL;
 
 // Delete temporary file.
 $ghostscript->deleteTmpFile();
 
 // Get error message.
 $error = $ghostscript->getError();
-echo 'Error = ' . $error . PHP_EOL;
 ```
 
 ## Testing
