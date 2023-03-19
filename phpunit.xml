@@ -5,12 +5,9 @@
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true">
-        <include>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
-        </include>
-        <report>
-            <html outputDirectory="tests/report"/>
-        </report>
-    </coverage>
+        </whitelist>
+    </filter>
 </phpunit>
