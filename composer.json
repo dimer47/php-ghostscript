@@ -1,6 +1,6 @@
 {
     "name": "ordinary9843/ghostscript",
-    "description": "Use ghostscript to merge all PDF files or guess and convert PDF file version",
+    "description": "Use ghostscript to merge all PDF files or guess and convert PDF file version.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,7 +13,7 @@
         "php": ">7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": ">7.0"
     },
     "autoload": {  
         "psr-4": { 
