@@ -41,21 +41,20 @@ $file = './files/test.pdf';
 $version = $ghostscript->guess($file);
 
 // Convert the pdf version.
-$file = $ghostscript->convert($file, Ghostscript::STABLE_VERSION);
+$ghostscript->convert($file, Ghostscript::STABLE_VERSION);
 
 // Merge all pdf.
-$files = [
+$ghostscript->merge('/files/merge.pdf', [
     './files/part_1.pdf',
     './files/part_2.pdf',
     './files/part_3.pdf'
-];
-$file = $ghostscript->merge('/files/merge.pdf', $files);
+]);
 
 // Delete temporary file.
 $ghostscript->deleteTmpFile();
 
 // Get error message.
-$error = $ghostscript->getError();
+$ghostscript->getError();
 ```
 
 ## Testing
