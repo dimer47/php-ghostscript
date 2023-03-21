@@ -38,7 +38,7 @@ $ghostscript = new Ghostscript($binPath, $tmpPath);
 $file = './files/test.pdf';
 
 // Guess the pdf version.
-$version = $ghostscript->guess($file);
+$ghostscript->guess($file);
 
 // Convert the pdf version.
 $ghostscript->convert($file, Ghostscript::STABLE_VERSION);
