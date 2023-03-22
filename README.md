@@ -24,7 +24,7 @@ composer require ordinary9843/ghostscript
 
 ## Usage
 
-This is a simple usage example how to guess or convert PDF.
+Example usage:
 
 ```php
 <?php
@@ -39,22 +39,34 @@ $file = './files/test.pdf';
 
 // Guess the pdf version.
 $ghostscript->guess($file);
+/**
+ * Output: '1.5'
+ */
 
 // Convert the pdf version.
 $ghostscript->convert($file, Ghostscript::STABLE_VERSION);
+/**
+ * Output: '1.4'
+ */
 
 // Merge all pdf.
-$ghostscript->merge('/files/merge.pdf', [
+$ghostscript->merge('./files/merge.pdf', [
     './files/part_1.pdf',
     './files/part_2.pdf',
     './files/part_3.pdf'
 ]);
+/**
+ * Output: './files/merge.pdf'
+ */
 
 // Delete temporary file.
 $ghostscript->deleteTmpFile();
 
 // Get error message.
 $ghostscript->getError();
+/**
+ * Output: 'Any error message.'
+ */
 ```
 
 ## Testing
