@@ -37,36 +37,40 @@ $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
 $file = './files/test.pdf';
 
-// Guess the pdf version.
-$ghostscript->guess($file);
 /**
+ * Guess the pdf version.
+ *
  * Output: '1.5'
  */
+$ghostscript->guess($file);
 
-// Convert the pdf version.
-$ghostscript->convert($file, Ghostscript::STABLE_VERSION);
 /**
+ * Convert the pdf version.
+ *
  * Output: '1.4'
  */
+$ghostscript->convert($file, Ghostscript::STABLE_VERSION);
 
-// Merge all pdf.
+/**
+ * Merge all pdf.
+ *
+ * Output: './files/merge.pdf'
+ */
 $ghostscript->merge('./files/merge.pdf', [
     './files/part_1.pdf',
     './files/part_2.pdf',
     './files/part_3.pdf'
 ]);
-/**
- * Output: './files/merge.pdf'
- */
 
 // Delete temporary file.
 $ghostscript->deleteTmpFile();
 
-// Get error message.
-$ghostscript->getError();
 /**
+ * Get error message.
+ *
  * Output: 'Any error message.'
  */
+$ghostscript->getError();
 ```
 
 ## Testing
