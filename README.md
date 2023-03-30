@@ -16,6 +16,12 @@ This library has the following requirements:
 
 ## Installation
 
+Requires:
+
+```bash
+apt-get install ghostscript
+```
+
 Require the package via composer:
 
 ```bash
