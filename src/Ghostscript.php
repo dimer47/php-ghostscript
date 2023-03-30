@@ -27,8 +27,8 @@ class Ghostscript
     /** @var array */
     protected $options = [];
 
-    /** @var string */
-    protected $error = '';
+    /** @var array */
+    protected $error = [];
 
     /**
      * @param string $binPath
@@ -192,9 +192,9 @@ class Ghostscript
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getError(): string
+    public function getError(): array
     {
         return $this->error;
     }
@@ -204,7 +204,8 @@ class Ghostscript
      */
     protected function setError(string $error): void
     {
-        $this->error = '[ERROR] ' . $error . PHP_EOL;
+        $error = '[ERROR] ' . $error;
+        (!in_array($error, $this->error)) && $this->error[] = $error;
     }
 
     /**
@@ -216,10 +217,7 @@ class Ghostscript
      */
     private function getConvertCommand(string $file, float $version, string $tmpFile): string
     {
-        $command = sprintf(self::CONVERT_COMMAND, $this->binPath, $version, $tmpFile, $file);
-        $command = $this->optionsToCommand($command);
-
-        return $command;
+        return $this->optionsToCommand(sprintf(self::CONVERT_COMMAND, $this->binPath, $version, $tmpFile, $file));
     }
 
     /**
@@ -230,10 +228,7 @@ class Ghostscript
      */
     private function getMergeCommand(string $file, array $files): string
     {
-        $command = sprintf(self::MERGE_COMMAND, $this->binPath, $file, implode(' ', $files));
-        $command = $this->optionsToCommand($command);
-
-        return $command;
+        return $this->optionsToCommand(sprintf(self::MERGE_COMMAND, $this->binPath, $file, implode(' ', $files)));
     }
 
     /**
@@ -342,9 +337,7 @@ class Ghostscript
             }
 
             if ($isAutoConvert === true) {
-                if ($this->guess($value) !== self::STABLE_VERSION) {
-                    $value = $this->convert($value, self::STABLE_VERSION);
-                }
+                ($this->guess($value) !== self::STABLE_VERSION) && $value = $this->convert($value, self::STABLE_VERSION);
             }
 
             $files[$key] = $value;

@@ -76,9 +76,8 @@ class GhostscriptTest extends TestCase
         ]);
 
         $version = $ghostscript->guess(self::FAKE_FILE);
-        $error = $ghostscript->getError();
         $this->assertEquals($version, 0);
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
     }
 
     /**
@@ -96,28 +95,24 @@ class GhostscriptTest extends TestCase
         $this->assertEquals($version, Ghostscript::STABLE_VERSION);
 
         $ghostscript->convert(self::FAKE_FILE, self::TEST_VERSION);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         $ghostscript->setOptions([
             '-dPDFSETTINGS' => '/screen',
             '-dNOPAUSE'
         ]);
         $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         $ghostscript->setBinPath($this->binPath);
         $ghostscript->setOptions([
             '-dCompatibilityLevel=test'
         ]);
         $ghostscript->convert(self::TEST_FILE, self::TEST_VERSION);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         $ghostscript->convert(self::OTHER_FILE, self::TEST_VERSION);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         $this->expectException('Exception');
         $ghostscript->setBinPath('');
@@ -148,15 +143,13 @@ class GhostscriptTest extends TestCase
             '-dPDFSETTINGS' => '/screen'
         ]);
         $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         $ghostscript->setOptions([
             '-dCompatibilityLevel=test'
         ]);
         $file = $ghostscript->merge(__DIR__ . '/../files/merge.pdf', $files);
-        $error = $ghostscript->getError();
-        $this->assertNotEquals($error, '');
+        $this->assertNotEmpty($ghostscript->getError());
 
         if (is_file($file)) {
             unlink($file);

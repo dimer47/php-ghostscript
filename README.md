@@ -12,7 +12,7 @@ Use ghostscript to merge all PDF files or guess and convert PDF file version. Fi
 This library has the following requirements:
 
 - PHP 7.1+
-- Ghostscript 9.50+
+- Ghostscript 9+
 
 ## Installation
 
@@ -68,7 +68,10 @@ $ghostscript->deleteTmpFile();
 /**
  * Get error message.
  *
- * Output: 'Any error message.'
+ * Output: [
+ *  '[INFO] Message ...',
+ *  '[ERROR] Message ...',
+ * ]
  */
 $ghostscript->getError();
 ```
