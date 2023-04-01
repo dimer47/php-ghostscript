@@ -76,7 +76,7 @@ $ghostscript->deleteTmpFile();
  *
  * Output: [
  *  '[INFO] Message ...',
- *  '[ERROR] Message ...',
+ *  '[ERROR] Message ...'
  * ]
  */
 $ghostscript->getError();
