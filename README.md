@@ -68,7 +68,9 @@ $ghostscript->merge('./files/merge.pdf', [
     './files/part_3.pdf'
 ]);
 
-// Delete temporary file.
+/**
+ * Delete temporary file.
+ */
 $ghostscript->deleteTmpFile();
 
 /**
