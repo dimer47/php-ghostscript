@@ -69,19 +69,19 @@ $ghostscript->merge('./files/merge.pdf', [
 ]);
 
 /**
- * Delete temporary file.
+ * Clear temporary file.
  */
-$ghostscript->deleteTmpFile();
+$ghostscript->clearTmpFile();
 
 /**
- * Get error message.
+ * Get all messages.
  *
  * Output: [
- *  '[INFO] Message ...',
- *  '[ERROR] Message ...'
+ *  '[INFO] Message.',
+ *  '[ERROR] Message.'
  * ]
  */
-$ghostscript->getError();
+$ghostscript->getMessages();
 ```
 
 ## Testing

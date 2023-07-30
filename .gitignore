@@ -1,6 +1,7 @@
 .idea/
 vendor/
 report/
+files/merge.pdf
 composer.lock
 coverage.xml
 .phpunit.result.cache
