@@ -38,10 +38,10 @@ require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 
+$file = './files/test.pdf';
 $binPath = '/usr/bin/gs';
 $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
-$file = './files/test.pdf';
 
 /**
  * Guess the pdf version.
