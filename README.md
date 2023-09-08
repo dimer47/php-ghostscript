@@ -55,7 +55,7 @@ $ghostscript->guess($file);
  *
  * Output: '1.4'
  */
-$ghostscript->convert($file, Ghostscript::STABLE_VERSION);
+$ghostscript->convert($file, 1.4);
 
 /**
  * Merge all pdf.
