@@ -21,7 +21,7 @@ class FileSystemTest extends TestCase
     public function testPathShouldValid(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript';
+        $path = '/tmp/mock/ghostscript';
         mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isValid($path));
         rmdir($path);
@@ -33,7 +33,7 @@ class FileSystemTest extends TestCase
     public function testPathShouldNotValid(): void
     {
         $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isValid('/var/mock/ghostscript'));
+        $this->assertEquals(false, $fileSystem->isValid('/tmp/mock/ghostscript'));
     }
 
     /**
@@ -42,7 +42,7 @@ class FileSystemTest extends TestCase
     public function testDirShouldExist(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript';
+        $path = '/tmp/mock/ghostscript';
         mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isDir($path));
         rmdir($path);
@@ -54,7 +54,7 @@ class FileSystemTest extends TestCase
     public function testDirShouldNotExist(): void
     {
         $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isDir('/var/mock/ghostscript'));
+        $this->assertEquals(false, $fileSystem->isDir('/tmp/mock/ghostscript'));
     }
 
     /**
@@ -63,9 +63,9 @@ class FileSystemTest extends TestCase
     public function testFileShouldExist(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript';
+        $path = '/tmp/mock/ghostscript';
         mkdir($path, 0755, true);
-        $file = '/var/mock/ghostscript/test.txt';
+        $file = '/tmp/mock/ghostscript/test.txt';
         file_put_contents($file, 'test');
         $this->assertEquals(true, $fileSystem->isFile($file));
         unlink($file);
@@ -78,6 +78,6 @@ class FileSystemTest extends TestCase
     public function testFileShouldNotExist(): void
     {
         $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isFile('/var/mock/ghostscript/test.txt'));
+        $this->assertEquals(false, $fileSystem->isFile('/tmp/mock/ghostscript/test.txt'));
     }
 }
