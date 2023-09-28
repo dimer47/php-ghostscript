@@ -1,55 +1,45 @@
 <?php
 
-namespace Ordinary9843\Traits;
+namespace Ordinary9843\Handlers;
 
-use Exception;
+use Ordinary9843\Configs\Config;
+use Ordinary9843\Traits\MessageTrait;
 use Ordinary9843\Constants\GhostscriptConstant;
 
-trait GhostscriptTrait
+class Handler
 {
-    /** @var string */
-    protected $binPath = '';
+    use MessageTrait;
 
-    /** @var string */
-    protected $tmpPath = '';
+    /** @var Config */
+    private static $config = null;
 
     /** @var array */
-    protected $options = [];
+    private static $options = [];
 
     /**
-     * @param string $binPath
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        self::$config = $config;
+    }
+
+    /**
+     * @param Config $config
      * 
      * @return void
      */
-    public function setBinPath(string $binPath): void
+    public function setConfig(Config $config): void
     {
-        $this->binPath = $this->convertPathSeparator($binPath);
+        self::$config = $config;
     }
 
     /**
-     * @return string
+     * @return Config
      */
-    public function getBinPath(): string
+    public function getConfig(): Config
     {
-        return $this->binPath;
-    }
-
-    /**
-     * @param string $tmpPath
-     * 
-     * @return void
-     */
-    public function setTmpPath(string $tmpPath): void
-    {
-        $this->tmpPath = $this->convertPathSeparator($tmpPath);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTmpPath(): string
-    {
-        return $this->tmpPath;
+        return self::$config;
     }
 
     /**
@@ -59,7 +49,7 @@ trait GhostscriptTrait
      */
     public function setOptions(array $options): void
     {
-        $this->options = $options;
+        self::$options = $options;
     }
 
     /**
@@ -67,7 +57,7 @@ trait GhostscriptTrait
      */
     public function getOptions(): array
     {
-        return $this->options;
+        return self::$options;
     }
 
     /**
@@ -75,7 +65,7 @@ trait GhostscriptTrait
      */
     public function getTmpFile(): string
     {
-        return $this->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(GhostscriptConstant::TMP_FILE_PREFIX) . '.pdf';
+        return $this->getConfig()->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(GhostscriptConstant::TMP_FILE_PREFIX) . '.pdf';
     }
 
     /**
@@ -83,7 +73,7 @@ trait GhostscriptTrait
      */
     public function getTmpFileCount(): int
     {
-        $tmpPath = $this->getTmpPath();
+        $tmpPath = $this->getConfig()->getTmpPath();
         $files = scandir($tmpPath);
         $count = 0;
         foreach ($files as $file) {
@@ -111,7 +101,7 @@ trait GhostscriptTrait
     public function clearTmpFile(bool $isForceClear = false, int $days = 7): void
     {
         $deleteSeconds = $days * 86400;
-        $tmpPath = $this->getTmpPath();
+        $tmpPath = $this->getConfig()->getTmpPath();
         $files = scandir($tmpPath);
         foreach ($files as $file) {
             if (in_array($file, ['.', '..'])) {
@@ -132,29 +122,6 @@ trait GhostscriptTrait
     }
 
     /**
-     * @param string $path
-     * 
-     * @return string
-     */
-    public function convertPathSeparator(string $path): string
-    {
-        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-    }
-
-    /**
-     * @return void
-     * 
-     * @throws Exception
-     */
-    public function validateBinPath(): void
-    {
-        $binPath = $this->getBinPath();
-        if (!is_dir($binPath) && !is_file($binPath)) {
-            throw new Exception('The ghostscript binary path is not set.');
-        }
-    }
-
-    /**
      * @param string $command
      * 
      * @return string
@@ -162,30 +129,9 @@ trait GhostscriptTrait
     public function optionsToCommand(string $command): string
     {
         $options = $this->getOptions();
-        if (!empty($options)) {
-            foreach ($options as $key => $value) {
-                (!is_numeric($key)) ? $command .= ' ' . $key . '=' . $value : $command .= ' ' . $value;
-            }
-        }
 
-        return $command;
-    }
-
-    /**
-     * @param string $file
-     * 
-     * @return bool
-     */
-    public function isPdf(string $file): bool
-    {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        if (
-            pathinfo($file, PATHINFO_EXTENSION) !== 'pdf' ||
-            finfo_file($finfo, $file) !== 'application/pdf'
-        ) {
-            return false;
-        }
-
-        return true;
+        return (!empty($options)) ? $command .= ' ' . implode(' ', array_map(function ($key, $value) {
+            return is_numeric($key) ? $value : $key . '=' . $value;
+        }, array_keys($options), $options)) : $command;
     }
 }
