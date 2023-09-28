@@ -20,8 +20,8 @@ class ConvertHandler extends Handler implements HandlerInterface
     {
         $this->getConfig()->validateBinPath();
 
-        [$file, $version] = $arguments;
-        $file = PathHelper::convertPathSeparator($file);
+        $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
+        $version = $arguments[1] ?? 0;
         if (!$this->getConfig()->getFileSystem()->isFile($file)) {
             $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, 'Failed to convert, ' . $file . ' is not exist.');
 

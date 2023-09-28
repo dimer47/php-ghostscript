@@ -17,7 +17,7 @@ class GuessHandler extends Handler implements HandlerInterface
     {
         $file = $arguments[0] ?? '';
         $version = 0;
-        if (!$this->getFileSystem()->isFile($file)) {
+        if (!$this->getConfig()->getFileSystem()->isFile($file)) {
             $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $file . ' is not exist.');
 
             return $version;

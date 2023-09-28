@@ -34,10 +34,12 @@ class MergeHandler extends Handler implements HandlerInterface
     {
         $this->getConfig()->validateBinPath();
 
-        [$file, $files, $isAutoConvert] = $arguments;
+        $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
+        $files = $arguments[1] ?? [];
+        $isAutoConvert = (bool)($arguments[2] ?? true);
         foreach ($files as $key => $value) {
             $value = PathHelper::convertPathSeparator($value);
-            if (!$this->getConfig()->getFileSystem($value)) {
+            if (!$this->getConfig()->getFileSystem()->isFile($value)) {
                 unset($files[$key]);
                 $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, 'Failed to convert, ' . $value . ' is not exist.');
                 continue;
