@@ -2,8 +2,10 @@
 
 namespace Ordinary9843\Handlers;
 
-use Ordinary9843\Helpers\Helper;
+use Ordinary9843\Cores\FileSystem;
+use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Handlers\GuessHandler;
+use Ordinary9843\Helpers\MimetypeHelper;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -38,12 +40,12 @@ class MergeHandler extends Handler implements HandlerInterface
         $files = $arguments[1] ?? [];
         $isAutoConvert = $arguments[2] ?? true;
         foreach ($files as $key => $value) {
-            $value = Helper::convertPathSeparator($value);
-            if (!is_file($value)) {
+            $value = PathHelper::convertPathSeparator($value);
+            if (!$this->getFileSystem()->($value)) {
                 unset($files[$key]);
                 $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, 'Failed to convert, ' . $value . ' is not exist.');
                 continue;
-            } elseif (!Helper::isPdf($value)) {
+            } elseif (!MimetypeHelper::isPdf($value)) {
                 unset($files[$key]);
                 $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $value . ' is not PDF.');
                 continue;

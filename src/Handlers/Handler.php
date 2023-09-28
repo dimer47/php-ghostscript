@@ -3,6 +3,7 @@
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Configs\Config;
+use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Traits\MessageTrait;
 use Ordinary9843\Constants\GhostscriptConstant;
 
@@ -13,6 +14,9 @@ class Handler
     /** @var Config */
     private static $config = null;
 
+    /** @var FileSystem */
+    private static $fileSystem = null;
+
     /** @var array */
     private static $options = [];
 
@@ -22,6 +26,7 @@ class Handler
     public function __construct(Config $config)
     {
         self::$config = $config;
+        self::$fileSystem = new FileSystem();
     }
 
     /**
@@ -40,6 +45,24 @@ class Handler
     public function getConfig(): Config
     {
         return self::$config;
+    }
+
+    /**
+     * @param FileSystem $fileSystem
+     * 
+     * @return void
+     */
+    public function setFileSystem(FileSystem $fileSystem): void
+    {
+        self::$fileSystem = $fileSystem;
+    }
+
+    /**
+     * @return FileSystem
+     */
+    public function getFileSystem(): FileSystem
+    {
+        return self::$fileSystem;
     }
 
     /**
@@ -82,7 +105,7 @@ class Handler
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if (is_file($path)) {
+            if ($this->getFileSystem()->isFile($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
                 (preg_match('/' . GhostscriptConstant::TMP_FILE_PREFIX . '/', $filename)) && $count++;
@@ -109,7 +132,7 @@ class Handler
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if (is_file($path)) {
+            if ($this->getFileSystem()->isFile($path)) {
                 $createdAt = filemtime($path);
                 $isExpired = time() - $createdAt > $deleteSeconds;
                 if ($isForceClear === true || $isExpired === true) {

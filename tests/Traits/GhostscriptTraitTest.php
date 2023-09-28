@@ -3,13 +3,10 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Ordinary9843\Traits\GhostscriptTrait;
 use Ordinary9843\Constants\GhostscriptConstant;
 
 class GhostscriptTraitTest extends TestCase
 {
-    use GhostscriptTrait;
-
     // /**
     //  * @return void
     //  */

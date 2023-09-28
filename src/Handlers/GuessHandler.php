@@ -2,6 +2,7 @@
 
 namespace Ordinary9843\Handlers;
 
+use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Interfaces\HandlerInterface;
 
@@ -16,7 +17,7 @@ class GuessHandler extends Handler implements HandlerInterface
     {
         $file = $arguments[0] ?? '';
         $version = 0;
-        if (!is_file($file)) {
+        if (!$this->getFileSystem()->isFile($file)) {
             $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $file . ' is not exist.');
 
             return $version;

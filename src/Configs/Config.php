@@ -3,8 +3,8 @@
 namespace Ordinary9843\Configs;
 
 use Exception;
-use Ordinary9843\Helpers\Helper;
 use Ordinary9843\Cores\FileSystem;
+use Ordinary9843\Helpers\PathHelper;
 
 class Config
 {
@@ -36,7 +36,7 @@ class Config
      */
     public function setBinPath(string $binPath): void
     {
-        $this->binPath = Helper::convertPathSeparator($binPath);
+        $this->binPath = PathHelper::convertPathSeparator($binPath);
     }
 
     /**
@@ -54,7 +54,7 @@ class Config
      */
     public function setTmpPath(string $tmpPath): void
     {
-        $this->tmpPath = Helper::convertPathSeparator($tmpPath);
+        $this->tmpPath = PathHelper::convertPathSeparator($tmpPath);
     }
 
     /**
