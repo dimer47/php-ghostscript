@@ -25,7 +25,7 @@ class Handler
      */
     public function __construct(Config $config = null)
     {
-        (self::$config === null) && self::$config = new Config();
+        self::$config = ($config !== null) ? $config : new Config();
         (self::$fileSystem === null) && self::$fileSystem = self::$config->getFileSystem();
     }
 

@@ -22,9 +22,9 @@ class Config
      */
     public function __construct(array $config = [])
     {
-        $this->setBinPath($config['binPath'] ?? 'gs');
-        $this->setTmpPath($config['tmpPath'] ?? sys_get_temp_dir());
-        $this->setFileSystem($config['fileSystem'] ?? new FileSystem());
+        $this->setBinPath((isset($config['binPath']) && $config['binPath']) ? $config['binPath'] : 'gs');
+        $this->setTmpPath((isset($config['tmpPath']) && $config['tmpPath']) ? $config['tmpPath'] : sys_get_temp_dir());
+        $this->setFileSystem((isset($config['fileSystem']) && $config['fileSystem']) ? $config['fileSystem'] : new FileSystem());
     }
 
     /**

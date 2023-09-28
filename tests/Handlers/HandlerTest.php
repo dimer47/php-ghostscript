@@ -58,7 +58,7 @@ class HandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testTmpFilePrefixAndSuffixShouldMatched(): void
+    public function testTmpFileShouldHaveCorrectFormat(): void
     {
         $handler = new Handler();
         $this->assertStringStartsWith('/tmp/ghostscript_tmp_file_', $handler->getTmpFile());
@@ -68,7 +68,7 @@ class HandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testTmpFileCountAfterClear(): void
+    public function testCommandShouldIncludeOptions(): void
     {
         $handler = new Handler();
         $handler->clearTmpFiles(true);
@@ -93,7 +93,7 @@ class HandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testFileShouldValidPdf(): void
+    public function testIsPdfShouldReturnTrue(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'pdf');
         file_put_contents($file, '%PDF-');
@@ -106,7 +106,7 @@ class HandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testFileShouldNotValidPdf(): void
+    public function testIsPdfShouldReturnFalse(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'txt');
         file_put_contents($file, 'txt');

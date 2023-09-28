@@ -11,14 +11,6 @@ class GuessHandlerTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
-     * @return void
-     */
     public function testExecuteWithExistFileShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
