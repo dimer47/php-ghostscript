@@ -11,15 +11,10 @@ class MimetypeHelper
      */
     public static function isPdf(string $file): bool
     {
-        // TODO: optimize logic.
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        if (
-            pathinfo($file, PATHINFO_EXTENSION) !== 'pdf' ||
-            finfo_file($finfo, $file) !== 'application/pdf'
-        ) {
+        if (pathinfo($file, PATHINFO_EXTENSION) !== 'pdf') {
             return false;
         }
 
-        return true;
+        return (finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file) === 'application/pdf');
     }
 }

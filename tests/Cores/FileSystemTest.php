@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Configs;
+namespace Tests\Cores;
 
 use PHPUnit\Framework\TestCase;
 use ordinary9843\Cores\FileSystem;
@@ -22,9 +22,9 @@ class FileSystemTest extends TestCase
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
-        mkdir($path, 0000, true);
+        mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isValid($path));
-        rmdir($path);
+        @rmdir($path);
     }
 
     /**
@@ -34,6 +34,7 @@ class FileSystemTest extends TestCase
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
+        @rmdir($path);
         $this->assertEquals(false, $fileSystem->isValid($path));
     }
 
@@ -44,9 +45,9 @@ class FileSystemTest extends TestCase
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
-        mkdir($path, 0000, true);
+        mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isDir($path));
-        rmdir($path);
+        @rmdir($path);
     }
 
     /**
@@ -56,6 +57,7 @@ class FileSystemTest extends TestCase
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
+        @rmdir($path);
         $this->assertEquals(false, $fileSystem->isDir($path));
     }
 
@@ -65,10 +67,13 @@ class FileSystemTest extends TestCase
     public function testFileShouldValid(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript/test.txt';
-        mkdir($path, 0000, true);
-        $this->assertEquals(true, $fileSystem->isDir($path));
-        rmdir($path);
+        $path = '/var/mock/ghostscript';
+        mkdir($path, 0755, true);
+        $file = '/var/mock/ghostscript/test.txt';
+        file_put_contents($file, 'test');
+        $this->assertEquals(true, $fileSystem->isFile($file));
+        @unlink($file);
+        @rmdir($path);
     }
 
     /**
@@ -77,7 +82,8 @@ class FileSystemTest extends TestCase
     public function testFileShouldInvalid(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript/test.txt';
-        $this->assertEquals(false, $fileSystem->isDir($path));
+        $file = '/var/mock/ghostscript/test.txt';
+        @unlink($file);
+        $this->assertEquals(false, $fileSystem->isFile($file));
     }
 }
