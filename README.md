@@ -46,14 +46,14 @@ $ghostscript = new Ghostscript($binPath, $tmpPath);
 /**
  * Guess the pdf version.
  *
- * Output: '1.5'
+ * Output: 1.5
  */
 $ghostscript->guess($file);
 
 /**
  * Convert the pdf version.
  *
- * Output: '1.4'
+ * Output: './files/merge.pdf'
  */
 $ghostscript->convert($file, 1.4);
 
