@@ -38,8 +38,8 @@ class HandlerTest extends TestCase
     {
         $fileSystem = new FileSystem();
         $handler = new Handler();
-        $handler->setFileSystem($fileSystem);
-        $this->assertEquals($fileSystem, $handler->getFileSystem());
+        $handler->getConfig()->setFileSystem($fileSystem);
+        $this->assertEquals($fileSystem, $handler->getConfig()->getFileSystem());
     }
 
     /**
@@ -88,5 +88,31 @@ class HandlerTest extends TestCase
             '-dSAFER'
         ]);
         $this->assertEquals($command . ' -dSAFER', $handler->optionsToCommand($command));
+    }
+
+    /**
+     * @return void
+     */
+    public function testFileShouldValidPdf(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pdf');
+        file_put_contents($file, '%PDF-');
+        rename($file, $file .= '.pdf');
+        $handler = new Handler();
+        $this->assertTrue($handler->isPdf($file));
+        @unlink($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFileShouldNotValidPdf(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'txt');
+        file_put_contents($file, 'txt');
+        rename($file, $file .= '.txt');
+        $handler = new Handler();
+        $this->assertFalse($handler->isPdf($file));
+        @unlink($file);
     }
 }

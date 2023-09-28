@@ -22,11 +22,9 @@ class Config
      */
     public function __construct(array $config = [])
     {
-        $binPath = $config['binPath'] ?? '';
-        $tmpPath = $config['tmpPath'] ?? '';
-        ($this->getBinPath() === '') && ($binPath !== '') && $this->setBinPath($binPath);
-        ($this->getTmpPath() === '') && ($tmpPath !== '') ? $this->setTmpPath($tmpPath) : $this->setTmpPath(sys_get_temp_dir());
-        self::$fileSystem = $config['fileSystem'] ?? new FileSystem();
+        $this->setBinPath($config['binPath'] ?? 'gs');
+        $this->setTmpPath($config['tmpPath'] ?? sys_get_temp_dir());
+        $this->setFileSystem($config['fileSystem'] ?? new FileSystem());
     }
 
     /**
@@ -66,6 +64,24 @@ class Config
     }
 
     /**
+     * @param FileSystem $fileSystem
+     * 
+     * @return void
+     */
+    public function setFileSystem(FileSystem $fileSystem): void
+    {
+        self::$fileSystem = $fileSystem;
+    }
+
+    /**
+     * @return FileSystem
+     */
+    public function getFileSystem(): FileSystem
+    {
+        return self::$fileSystem;
+    }
+
+    /**
      * @return void
      * 
      * @throws Exception
@@ -73,7 +89,7 @@ class Config
     public function validateBinPath(): void
     {
         $binPath = $this->getBinPath();
-        if (!self::$fileSystem->isValid($binPath)) {
+        if (!$binPath || !self::$fileSystem->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
             throw new Exception('The Ghostscript binary path is not set.');
         }
     }

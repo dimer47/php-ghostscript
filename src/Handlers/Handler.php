@@ -25,8 +25,8 @@ class Handler
      */
     public function __construct(Config $config = null)
     {
-        ($config !== null) && self::$config = $config;
-        (self::$fileSystem === null) && self::$fileSystem = new FileSystem();
+        (self::$config === null) && self::$config = new Config();
+        (self::$fileSystem === null) && self::$fileSystem = self::$config->getFileSystem();
     }
 
     /**
@@ -45,24 +45,6 @@ class Handler
     public function getConfig(): Config
     {
         return self::$config;
-    }
-
-    /**
-     * @param FileSystem $fileSystem
-     * 
-     * @return void
-     */
-    public function setFileSystem(FileSystem $fileSystem): void
-    {
-        self::$fileSystem = $fileSystem;
-    }
-
-    /**
-     * @return FileSystem
-     */
-    public function getFileSystem(): FileSystem
-    {
-        return self::$fileSystem;
     }
 
     /**
@@ -105,7 +87,7 @@ class Handler
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if ($this->getFileSystem()->isFile($path)) {
+            if ($this->getConfig()->getFileSystem()->isFile($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
                 (preg_match('/' . GhostscriptConstant::TMP_FILE_PREFIX . '/', $filename)) && $count++;
@@ -132,7 +114,7 @@ class Handler
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if ($this->getFileSystem()->isFile($path)) {
+            if ($this->getConfig()->getFileSystem()->isFile($path)) {
                 $createdAt = filemtime($path);
                 $isExpired = time() - $createdAt > $deleteSeconds;
                 if ($isForceClear === true || $isExpired === true) {
@@ -156,5 +138,19 @@ class Handler
         return (!empty($options)) ? $command .= ' ' . implode(' ', array_map(function ($key, $value) {
             return is_numeric($key) ? $value : $key . '=' . $value;
         }, array_keys($options), $options)) : $command;
+    }
+
+    /**
+     * @param string $file
+     * 
+     * @return bool
+     */
+    public function isPdf(string $file): bool
+    {
+        if (pathinfo($file, PATHINFO_EXTENSION) !== 'pdf') {
+            return false;
+        }
+
+        return (finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file) === 'application/pdf');
     }
 }
