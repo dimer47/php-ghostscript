@@ -71,7 +71,7 @@ $ghostscript->merge('./files/merge.pdf', [
 /**
  * Clear temporary file.
  */
-$ghostscript->clearTmpFile();
+$ghostscript->clearTmpFiles();
 
 /**
  * Get all messages.

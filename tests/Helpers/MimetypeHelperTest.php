@@ -18,7 +18,7 @@ class MimetypeHelperTest extends TestCase
     /**
      * @return void
      */
-    public function testFileShouldBeValidPdf(): void
+    public function testFileShouldValidPdf(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'pdf');
         file_put_contents($file, '%PDF-');
@@ -30,7 +30,7 @@ class MimetypeHelperTest extends TestCase
     /**
      * @return void
      */
-    public function testFileShouldNotBeValidPdf(): void
+    public function testFileShouldNotValidPdf(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'txt');
         file_put_contents($file, 'txt');

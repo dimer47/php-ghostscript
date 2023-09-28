@@ -24,47 +24,43 @@ class FileSystemTest extends TestCase
         $path = '/var/mock/ghostscript';
         mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isValid($path));
-        @rmdir($path);
+        rmdir($path);
     }
 
     /**
      * @return void
      */
-    public function testPathShouldInvalid(): void
+    public function testPathShouldNotValid(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript';
-        @rmdir($path);
-        $this->assertEquals(false, $fileSystem->isValid($path));
+        $this->assertEquals(false, $fileSystem->isValid('/var/mock/ghostscript'));
     }
 
     /**
      * @return void
      */
-    public function testDirShouldValid(): void
+    public function testDirShouldExist(): void
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
         mkdir($path, 0755, true);
         $this->assertEquals(true, $fileSystem->isDir($path));
-        @rmdir($path);
+        rmdir($path);
     }
 
     /**
      * @return void
      */
-    public function testDirShouldInvalid(): void
+    public function testDirShouldNotExist(): void
     {
         $fileSystem = new FileSystem();
-        $path = '/var/mock/ghostscript';
-        @rmdir($path);
-        $this->assertEquals(false, $fileSystem->isDir($path));
+        $this->assertEquals(false, $fileSystem->isDir('/var/mock/ghostscript'));
     }
 
     /**
      * @return void
      */
-    public function testFileShouldValid(): void
+    public function testFileShouldExist(): void
     {
         $fileSystem = new FileSystem();
         $path = '/var/mock/ghostscript';
@@ -72,18 +68,16 @@ class FileSystemTest extends TestCase
         $file = '/var/mock/ghostscript/test.txt';
         file_put_contents($file, 'test');
         $this->assertEquals(true, $fileSystem->isFile($file));
-        @unlink($file);
-        @rmdir($path);
+        unlink($file);
+        rmdir($path);
     }
 
     /**
      * @return void
      */
-    public function testFileShouldInvalid(): void
+    public function testFileShouldNotExist(): void
     {
         $fileSystem = new FileSystem();
-        $file = '/var/mock/ghostscript/test.txt';
-        @unlink($file);
-        $this->assertEquals(false, $fileSystem->isFile($file));
+        $this->assertEquals(false, $fileSystem->isFile('/var/mock/ghostscript/test.txt'));
     }
 }

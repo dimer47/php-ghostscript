@@ -18,15 +18,15 @@ class Handler
     private static $fileSystem = null;
 
     /** @var array */
-    private static $options = [];
+    private $options = [];
 
     /**
      * @param Config $config
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config = null)
     {
-        self::$config = $config;
-        self::$fileSystem = new FileSystem();
+        ($config !== null) && self::$config = $config;
+        (self::$fileSystem === null) && self::$fileSystem = new FileSystem();
     }
 
     /**
@@ -72,7 +72,7 @@ class Handler
      */
     public function setOptions(array $options): void
     {
-        self::$options = $options;
+        $this->options = $options;
     }
 
     /**
@@ -80,7 +80,7 @@ class Handler
      */
     public function getOptions(): array
     {
-        return self::$options;
+        return $this->options;
     }
 
     /**
@@ -121,7 +121,7 @@ class Handler
      * 
      * @return void
      */
-    public function clearTmpFile(bool $isForceClear = false, int $days = 7): void
+    public function clearTmpFiles(bool $isForceClear = false, int $days = 7): void
     {
         $deleteSeconds = $days * 86400;
         $tmpPath = $this->getConfig()->getTmpPath();

@@ -20,7 +20,6 @@ class PathHelperTest extends TestCase
      */
     public function testPathShouldEqualOriginPathAfterConversion(): void
     {
-        $path = '/use/bin/gs';
-        $this->assertEquals($path, PathHelper::convertPathSeparator($path));
+        $this->assertEquals(implode(DIRECTORY_SEPARATOR, ['usr', 'bin', 'gs']), PathHelper::convertPathSeparator('usr/bin/gs'));
     }
 }
