@@ -4,7 +4,6 @@ namespace Tests\Handlers;
 
 use PHPUnit\Framework\TestCase;
 use Ordinary9843\Configs\Config;
-use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Handlers\MergeHandler;
 use Ordinary9843\Constants\MessageConstant;
 
