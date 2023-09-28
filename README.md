@@ -69,7 +69,7 @@ $ghostscript->merge('./files/merge.pdf', [
 ]);
 
 /**
- * Clear temporary file.
+ * Clear temporary files.
  */
 $ghostscript->clearTmpFiles();
 
@@ -94,7 +94,7 @@ composer test
 
 (The [MIT](http://www.opensource.org/licenses/mit-license.php) License)
 
-Copyright &copy; [Jerry Chen](https://ordinary9843.medium.com/)
+Copyright &copy; [Jerry Chen](https://www.linkedin.com/in/ordinary9843/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
