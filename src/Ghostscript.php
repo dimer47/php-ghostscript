@@ -10,10 +10,14 @@ use Ordinary9843\Handlers\MergeHandler;
 use Ordinary9843\Handlers\ConvertHandler;
 
 /**
- * @method string convert(array ...$arguments)
- * @method float guess(array ...$arguments)
- * @method string merge(array ...$arguments)
- * @method void setOptions(array ...$arguments)
+ * @method string convert(string $file, float $version)
+ * @method float guess(string $file)
+ * @method string merge(string $file, array $files)
+ * @method void setBinPath(string $binPath)
+ * @method string getBinPath()
+ * @method void setTmpPath(string $tmpPath)
+ * @method string getTmpPath()
+ * @method void setOptions(array $options)
  * @method array getOptions()
  * @method array getMessages()
  */
@@ -53,6 +57,14 @@ class Ghostscript
                 return $this->execute(GuessHandler::class, $arguments);
             case 'merge':
                 return $this->execute(MergeHandler::class, $arguments);
+            case 'setBinPath':
+                return $this->handler->getConfig()->setBinPath(current($arguments));
+            case 'getBinPath':
+                return $this->handler->getConfig()->getBinPath();
+            case 'setTmpPath':
+                return $this->handler->getConfig()->setTmpPath(current($arguments));
+            case 'getTmpPath':
+                return $this->handler->getConfig()->getTmpPath();
             case 'setOptions':
                 return $this->handler->setOptions(...$arguments);
             case 'getOptions':

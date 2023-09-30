@@ -74,6 +74,16 @@ $ghostscript->merge('./files/merge.pdf', [
 $ghostscript->clearTmpFiles();
 
 /**
+ * Set binary path for Ghostscript.
+ */
+$ghostscript->setBinPath('/usr/bin/gs');
+
+/**
+ * Set temporary path for Ghostscript.
+ */
+$ghostscript->setTmpPath(sys_get_temp_dir());
+
+/**
  * Get all messages.
  *
  * Output: [

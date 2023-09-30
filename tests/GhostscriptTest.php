@@ -39,19 +39,34 @@ class GhostscriptTest extends TestCase
     /**
      * @return void
      */
-    public function testSetOptionsShouldReturnNull(): void
+    public function testSetBinPathShouldEqualGetBinPath(): void
     {
-        $this->assertNull((new Ghostscript())->setOptions([
-            '-dSAFER'
-        ]));
+        $ghostscript = new Ghostscript();
+        $binPath = '/usr/bin/gs';
+        $ghostscript->setBinPath($binPath);
+        $this->assertEquals($binPath, $ghostscript->getBinPath());
     }
 
     /**
      * @return void
      */
-    public function testGetOptionsShouldReturnArray(): void
+    public function testSetTmpPathShouldEqualGetTmpPath(): void
     {
-        $this->assertIsArray((new Ghostscript())->getOptions());
+        $ghostscript = new Ghostscript();
+        $tmpPath = sys_get_temp_dir();
+        $ghostscript->setTmpPath($tmpPath);
+        $this->assertEquals($tmpPath, $ghostscript->getTmpPath());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetOptionsShouldEqualGetOptions(): void
+    {
+        $ghostscript = new Ghostscript();
+        $options = ['-dSAFER'];
+        $ghostscript->setOptions($options);
+        $this->assertEquals($options, $ghostscript->getOptions());
     }
 
     /**
