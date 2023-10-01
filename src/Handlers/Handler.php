@@ -148,14 +148,15 @@ class Handler
             return 0;
         }
 
-        exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file), $output, $code);
+        $output = shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
         echo PHP_EOL . PHP_EOL;
-        echo 'code = ' . $code . PHP_EOL;
-        print_R($output);
+        echo 'output = ' . $output . PHP_EOL;
         echo PHP_EOL . PHP_EOL;
-        if ($code <> 0) {
+        if (empty($output)) {
             return 0;
         }
+
+        $output = explode(PHP_EOL, trim($output));
 
         return (int)current($output);
     }
