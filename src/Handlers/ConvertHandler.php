@@ -25,7 +25,7 @@ class ConvertHandler extends Handler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
             $version = $arguments[1] ?? 0;
             if (!$this->getConfig()->getFileSystem()->isFile($file)) {
-                throw new Exception('Failed to convert, ' . $file . ' is not exist.');
+                throw new Exception($file . ' is not exist.');
             } elseif (!$this->isPdf($file)) {
                 throw new Exception($file . ' is not PDF.');
             }

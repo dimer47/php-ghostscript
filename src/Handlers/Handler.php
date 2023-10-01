@@ -2,8 +2,10 @@
 
 namespace Ordinary9843\Handlers;
 
+use Exception;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Traits\MessageTrait;
+use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Constants\GhostscriptConstant;
 
 class Handler
@@ -142,23 +144,21 @@ class Handler
      */
     public function getPdfTotalPage(string $file): int
     {
-        if (!$this->getConfig()->getFileSystem()->isFile($file)) {
-            return 0;
-        } elseif (!$this->isPdf($file)) {
+        try {
+            $this->getConfig()->validateBinPath();
+
+            if (!$this->getConfig()->getFileSystem()->isFile($file)) {
+                throw new Exception($file . ' is not exist.');
+            } elseif (!$this->isPdf($file)) {
+                throw new Exception($file . ' is not PDF.');
+            }
+
+            return (int)shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
+        } catch (Exception $e) {
+            $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $e->getMessage());
+
             return 0;
         }
-
-        $output = shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
-        echo PHP_EOL . PHP_EOL;
-        echo 'output = ' . $output . PHP_EOL;
-        echo PHP_EOL . PHP_EOL;
-        if (empty($output)) {
-            return 0;
-        }
-
-        $output = explode(PHP_EOL, trim($output));
-
-        return (isset($output[0]) && is_numeric($output[0])) ? (int)$output[0] : 0;
     }
 
     /**

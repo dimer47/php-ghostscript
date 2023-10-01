@@ -96,7 +96,10 @@ class HandlerTest extends TestCase
     public function testGetPdfTotalPageShouldReturnGreaterThanZero(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
-        $handler = new Handler();
+        $config = new Config([
+            'binPath' => '/usr/bin/gs'
+        ]);
+        $handler = new Handler($config);
         $this->assertGreaterThan(0, $handler->getPdfTotalPage($file));
     }
 

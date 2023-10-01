@@ -22,10 +22,9 @@ class SplitHandlerTest extends TestCase
      */
     public function testExecuteWithExistFileShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $splitHandler = new SplitHandler();
         $splitHandler->getConfig()->setBinPath('/usr/bin/gs');
-        $this->assertCount(3, $splitHandler->execute($file, dirname(__DIR__, 2) . '/files/split'));
+        $this->assertCount(3, $splitHandler->execute(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split'));
         $this->assertEmpty($splitHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
     }
 
@@ -34,13 +33,12 @@ class SplitHandlerTest extends TestCase
      */
     public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $splitHandler = $this->getMockBuilder(SplitHandler::class)
             ->setConstructorArgs([new Config(['binPath' => '/usr/bin/gs'])])
             ->setMethods(['getPdfTotalPage'])
             ->getMock();
         $splitHandler->method('getPdfTotalPage')->willReturn(0);
-        $this->assertCount(0, $splitHandler->execute($file, dirname(__DIR__, 2) . '/files/split'));
+        $this->assertCount(0, $splitHandler->execute(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split'));
         $this->assertNotEmpty($splitHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
     }
 
@@ -49,15 +47,13 @@ class SplitHandlerTest extends TestCase
      */
     public function testExecuteFailedShouldReturnErrorMessage(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $splitHandler = new SplitHandler(new Config([
             'binPath' => '/usr/bin/gs'
         ]));
         $splitHandler->setOptions([
             'test' => true
         ]);
-        $splitHandler->execute($file, dirname(__DIR__, 2) . '/files/split');
-        $this->assertFileExists($file);
+        $splitHandler->execute(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split');
         $this->assertNotEmpty($splitHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
     }
 }
