@@ -158,7 +158,7 @@ class Handler
 
         $output = explode(PHP_EOL, trim($output));
 
-        return (int)current($output);
+        return (isset($output[0]) && is_numeric($output[0])) ? (int)$output[0] : 0;
     }
 
     /**
