@@ -39,7 +39,7 @@ class MergeHandler extends Handler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
             $files = $arguments[1] ?? [];
             $isAutoConvert = (bool)($arguments[2] ?? true);
-            $files = array_filter($files, function (&$value) use ($isAutoConvert) {
+            $files = array_filter($files, function ($value) use ($isAutoConvert) {
                 $value = PathHelper::convertPathSeparator($value);
                 if (!$this->getConfig()->getFileSystem()->isFile($value)) {
                     $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $value . ' is not exist.');

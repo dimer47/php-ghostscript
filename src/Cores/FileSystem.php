@@ -11,7 +11,7 @@ class FileSystem
      */
     public function isValid(string $path): bool
     {
-        return (!empty($path) && ($this->isDir($path) || $this->isFile($path)));
+        return ($path && ($this->isDir($path) || $this->isFile($path)));
     }
 
     /**
@@ -21,7 +21,7 @@ class FileSystem
      */
     public function isDir(string $path): bool
     {
-        return is_dir($path);
+        return ($path && is_dir($path));
     }
 
     /**
@@ -31,6 +31,6 @@ class FileSystem
      */
     public function isFile(string $path): bool
     {
-        return is_file($path);
+        return ($path && is_file($path));
     }
 }
