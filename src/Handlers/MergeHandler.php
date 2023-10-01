@@ -2,6 +2,7 @@
 
 namespace Ordinary9843\Handlers;
 
+use Exception;
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Handlers\ConvertHandler;
@@ -34,32 +35,36 @@ class MergeHandler extends Handler implements HandlerInterface
     {
         $this->getConfig()->validateBinPath();
 
-        $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
-        $files = $arguments[1] ?? [];
-        $isAutoConvert = (bool)($arguments[2] ?? true);
-        foreach ($files as $key => $value) {
-            $value = PathHelper::convertPathSeparator($value);
-            if (!$this->getConfig()->getFileSystem()->isFile($value)) {
-                unset($files[$key]);
-                $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, 'Failed to convert, ' . $value . ' is not exist.');
-                continue;
-            } elseif (!$this->isPdf($value)) {
-                unset($files[$key]);
-                $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $value . ' is not PDF.');
-                continue;
+        try {
+            $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
+            $files = $arguments[1] ?? [];
+            $isAutoConvert = (bool)($arguments[2] ?? true);
+            $files = array_filter($files, function (&$value) use ($isAutoConvert) {
+                $value = PathHelper::convertPathSeparator($value);
+                if (!$this->getConfig()->getFileSystem()->isFile($value)) {
+                    $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $value . ' is not exist.');
+
+                    return false;
+                } elseif (!$this->isPdf($value)) {
+                    $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $value . ' is not PDF.');
+
+                    return false;
+                }
+                ($isAutoConvert === true && $this->guessHandler->execute($value) !== GhostscriptConstant::STABLE_VERSION) && $value = $this->convertHandler->execute($value, GhostscriptConstant::STABLE_VERSION);
+
+                return true;
+            });
+
+            $output = shell_exec($this->optionsToCommand(sprintf(GhostscriptConstant::MERGE_COMMAND, $this->getConfig()->getBinPath(), $file, implode(' ', $files))));
+            if ($output) {
+                throw new Exception('Failed to merge ' . $file . ', because ' . $output);
             }
 
-            ($isAutoConvert === true) && ($this->guessHandler->execute($value) !== GhostscriptConstant::STABLE_VERSION) && $value = $this->convertHandler->execute($value, GhostscriptConstant::STABLE_VERSION);
-            $files[$key] = $value;
-        }
-
-        $output = shell_exec($this->optionsToCommand(sprintf(GhostscriptConstant::MERGE_COMMAND, $this->getConfig()->getBinPath(), $file, implode(' ', $files))));
-        if ($output) {
-            $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, 'Failed to convert ' . $file . ', because ' . $output);
+            return $file;
+        } catch (Exception $e) {
+            $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $e->getMessage());
 
             return '';
         }
-
-        return $file;
     }
 }

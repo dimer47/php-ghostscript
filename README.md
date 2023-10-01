@@ -5,7 +5,7 @@
 
 ### Intro
 
-Use ghostscript to merge all PDF files or guess and convert PDF file version. Fix FPDF error by ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+Use Ghostscript to merge all PDF files or guess and convert PDF file version. Fix FPDF error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 
