@@ -40,25 +40,35 @@ use Ordinary9843\Ghostscript;
 
 $file = './files/test.pdf';
 $binPath = '/usr/bin/gs';
-$tmpPath = '/tmp';
+$tmpPath = sys_get_temp_dir();
 $ghostscript = new Ghostscript($binPath, $tmpPath);
 
 /**
- * Guess the pdf version.
+ * Set the binary path for PDF processing in Ghostscript.
+ */
+$ghostscript->setBinPath($binPath);
+
+/**
+ * Set the temporary file path for PDF processing in Ghostscript.
+ */
+$ghostscript->setTmpPath($tmpPath);
+
+/**
+ * Guess the PDF version.
  *
  * Output: 1.5
  */
 $ghostscript->guess($file);
 
 /**
- * Convert the pdf version.
+ * Convert the PDF version.
  *
  * Output: './files/merge.pdf'
  */
 $ghostscript->convert($file, 1.4);
 
 /**
- * Merge all pdf.
+ * Merge all PDF.
  *
  * Output: './files/merge.pdf'
  */
@@ -69,22 +79,7 @@ $ghostscript->merge('./files/merge.pdf', [
 ]);
 
 /**
- * Clear temporary files.
- */
-$ghostscript->clearTmpFiles();
-
-/**
- * Set binary path for Ghostscript.
- */
-$ghostscript->setBinPath('/usr/bin/gs');
-
-/**
- * Set temporary path for Ghostscript.
- */
-$ghostscript->setTmpPath(sys_get_temp_dir());
-
-/**
- * Get all messages.
+ * Get all execution messages.
  *
  * Output: [
  *  '[INFO] Message.',
@@ -92,6 +87,11 @@ $ghostscript->setTmpPath(sys_get_temp_dir());
  * ]
  */
 $ghostscript->getMessages();
+
+/**
+ * Clear temporary files generated during the PDF processing.
+ */
+$ghostscript->clearTmpFiles();
 ```
 
 ## Testing
