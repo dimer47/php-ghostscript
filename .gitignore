@@ -1,7 +1,7 @@
 .idea/
 vendor/
 report/
-files/split/
+files/parts/
 files/merge.pdf
 composer.lock
 coverage.xml

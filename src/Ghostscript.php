@@ -14,7 +14,7 @@ use Ordinary9843\Handlers\ConvertHandler;
  * @method string convert(string $file, float $version)
  * @method float guess(string $file)
  * @method string merge(string $file, array $files)
- * @method array split(string $file)
+ * @method array split(string $file, string $path)
  * @method void setBinPath(string $binPath)
  * @method string getBinPath()
  * @method void setTmpPath(string $tmpPath)

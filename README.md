@@ -82,12 +82,12 @@ $ghostscript->merge('./files/merge.pdf', [
  * Split all PDF.
  *
  * Output: [
- *   './files/split/part_1.pdf',
- *   './files/split/part_2.pdf',
- *   './files/split/part_3.pdf'
+ *   './files/parts/part_1.pdf',
+ *   './files/parts/part_2.pdf',
+ *   './files/parts/part_3.pdf'
  * ]
  */
-$ghostscript->split('./files/merge.pdf', './files/split');
+$ghostscript->split('./files/merge.pdf', './files/parts');
 
 /**
  * Get all execution messages.
