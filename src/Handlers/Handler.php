@@ -149,6 +149,10 @@ class Handler
         }
 
         exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file), $output, $code);
+        echo PHP_EOL . PHP_EOL;
+        echo 'code = ' . $code . PHP_EOL;
+        print_R($output);
+        echo PHP_EOL . PHP_EOL;
         if ($code <> 0) {
             return 0;
         }
