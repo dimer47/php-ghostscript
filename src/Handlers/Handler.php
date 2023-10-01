@@ -155,7 +155,7 @@ class Handler
 
             $output = shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
 
-            return (int)$output;
+            return ($output) ? (int)$output : 0;
         } catch (Exception $e) {
             $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $e->getMessage());
 
