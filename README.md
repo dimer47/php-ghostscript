@@ -5,7 +5,7 @@
 
 ### Intro
 
-Use Ghostscript to merge all PDF files or guess and convert PDF file version. Fix FPDF error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+Use Ghostscript to merge / split all PDF files or guess and convert PDF file version. Fix FPDF error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 
@@ -77,6 +77,17 @@ $ghostscript->merge('./files/merge.pdf', [
     './files/part_2.pdf',
     './files/part_3.pdf'
 ]);
+
+/**
+ * Split all PDF.
+ *
+ * Output: [
+ *   './files/split/part_1.pdf',
+ *   './files/split/part_2.pdf',
+ *   './files/split/part_3.pdf'
+ * ]
+ */
+$ghostscript->split('./files/merge.pdf', './files/split');
 
 /**
  * Get all execution messages.

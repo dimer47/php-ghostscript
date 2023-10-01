@@ -93,6 +93,43 @@ class HandlerTest extends TestCase
     /**
      * @return void
      */
+    public function testGetPdfTotalPageShouldReturnGreaterThanZero(): void
+    {
+        $file = dirname(__DIR__, 2) . '/files/test.pdf';
+        $handler = new Handler();
+        $this->assertGreaterThan(0, $handler->getPdfTotalPage($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetPdfTotalPageShouldReturnLessThanOrEqualZero(): void
+    {
+        $fileSystem = $this->createMock(FileSystem::class);
+        $fileSystem->method('isFile')->willReturn(false);
+        $file = dirname(__DIR__, 2) . '/files/test.pdf';
+        $handler = new Handler(new Config([
+            'binPath' => '/usr/bin/gs',
+            'fileSystem' => $fileSystem
+        ]));
+        $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
+
+        $handler = new Handler(new Config([
+            'binPath' => '/usr/test/gs'
+        ]));
+        $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
+
+        $handler = $this->getMockBuilder(Handler::class)
+            ->setConstructorArgs([new Config(['binPath' => '/usr/bin/gs'])])
+            ->setMethods(['isPdf'])
+            ->getMock();
+        $handler->method('isPdf')->willReturn(false);
+        $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
+    }
+
+    /**
+     * @return void
+     */
     public function testIsPdfShouldReturnTrue(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'pdf');

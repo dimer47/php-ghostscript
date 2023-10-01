@@ -7,12 +7,14 @@ use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Handlers\MergeHandler;
+use Ordinary9843\Handlers\SplitHandler;
 use Ordinary9843\Handlers\ConvertHandler;
 
 /**
  * @method string convert(string $file, float $version)
  * @method float guess(string $file)
  * @method string merge(string $file, array $files)
+ * @method array split(string $file)
  * @method void setBinPath(string $binPath)
  * @method string getBinPath()
  * @method void setTmpPath(string $tmpPath)
@@ -57,6 +59,8 @@ class Ghostscript
                 return $this->execute(GuessHandler::class, $arguments);
             case 'merge':
                 return $this->execute(MergeHandler::class, $arguments);
+            case 'split':
+                return $this->execute(SplitHandler::class, $arguments);
             case 'setBinPath':
                 return $this->handler->getConfig()->setBinPath(current($arguments));
             case 'getBinPath':

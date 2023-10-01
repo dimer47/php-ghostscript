@@ -3,7 +3,6 @@
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Configs\Config;
-use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Traits\MessageTrait;
 use Ordinary9843\Constants\GhostscriptConstant;
 
@@ -14,9 +13,6 @@ class Handler
     /** @var Config */
     private static $config = null;
 
-    /** @var FileSystem */
-    private static $fileSystem = null;
-
     /** @var array */
     private $options = [];
 
@@ -26,7 +22,6 @@ class Handler
     public function __construct(Config $config = null)
     {
         self::$config = ($config !== null) ? $config : new Config();
-        (self::$fileSystem === null) && self::$fileSystem = self::$config->getFileSystem();
     }
 
     /**
@@ -138,6 +133,27 @@ class Handler
         return (!empty($options)) ? $command .= ' ' . implode(' ', array_map(function ($key, $value) {
             return is_numeric($key) ? $value : $key . '=' . $value;
         }, array_keys($options), $options)) : $command;
+    }
+
+    /**
+     * @param string $file
+     * 
+     * @return int
+     */
+    public function getPdfTotalPage(string $file): int
+    {
+        if (!$this->getConfig()->getFileSystem()->isFile($file)) {
+            return 0;
+        } elseif (!$this->isPdf($file)) {
+            return 0;
+        }
+
+        exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file), $output, $code);
+        if ($code <> 0) {
+            return 0;
+        }
+
+        return (int)current($output);
     }
 
     /**

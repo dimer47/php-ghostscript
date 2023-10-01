@@ -60,7 +60,7 @@ class ConvertHandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testExecuteConvertFailedShouldReturnErrorMessage(): void
+    public function testExecuteFailedShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $convertHandler = new ConvertHandler(new Config([

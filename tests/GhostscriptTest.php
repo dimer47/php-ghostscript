@@ -39,6 +39,14 @@ class GhostscriptTest extends TestCase
     /**
      * @return void
      */
+    public function testSplitWithExistFilesShouldSucceed(): void
+    {
+        $this->assertIsArray((new Ghostscript('/usr/bin/gs'))->split(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split'));
+    }
+
+    /**
+     * @return void
+     */
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
         $ghostscript = new Ghostscript();
