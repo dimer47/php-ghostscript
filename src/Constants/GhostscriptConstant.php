@@ -17,7 +17,7 @@ class GhostscriptConstant
     const SPLIT_COMMAND = '%s -sDEVICE=pdfwrite -dNOPAUSE -dQUIET -dBATCH -dFirstPage=%d -dLastPage=%d -sOUTPUTFILE=%s %s';
 
     /** @var string */
-    const TOTAL_PAGE_COMMAND = '%s -dQUIET -dNODISPLAY -c "(%s) (r) file runpdfbegin pdfpagecount = quit"';
+    const TOTAL_PAGE_COMMAND = '%s -dQUIET -dNODISPLAY -dSAFER -c "(%s) (r) file runpdfbegin pdfpagecount = quit"';
 
     /** @var string */
     const SPLIT_FILENAME = '/part_%d.pdf';
