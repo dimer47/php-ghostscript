@@ -153,7 +153,11 @@ class Handler
                 throw new Exception($file . ' is not PDF.');
             }
 
-            return (int)shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
+            $output = shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
+            echo PHP_EOL . PHP_EOL;
+            print_r($output);
+            echo PHP_EOL . PHP_EOL;
+            return (int)$output;
         } catch (Exception $e) {
             $this->addMessage(MessageConstant::MESSAGE_TYPE_ERROR, $e->getMessage());
 
