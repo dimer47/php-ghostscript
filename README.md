@@ -7,12 +7,18 @@
 
 Use Ghostscript to merge / split all PDF files or guess and convert PDF file version. Fix FPDF error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
+### Cores
+
+- Full-featured: This library supports PDF version prediction, conversion, merger, and splitting.
+- Lower dependency on external libraries: Most Ghostscript libraries have too high a dependency on other libraries.
+- Compatible with multiple PHP versions: It can run properly on PHP 7.1, 7.2, 7.3, 7.4, and 8.0.
+
 ## Requirements
 
 This library has the following requirements:
 
 - PHP 7.1+
-- Ghostscript 9+
+- Ghostscript 9.50+
 
 ## Installation
 
