@@ -9,6 +9,8 @@ Use Ghostscript to merge / split all PDF files or guess and convert PDF file ver
 
 ### Cores
 
+This library has the following features:
+
 - Full-featured: This library supports PDF version prediction, conversion, merger, and splitting.
 - Lower dependency on external libraries: Most Ghostscript libraries have too high a dependency on other libraries.
 - Compatible with multiple PHP versions: It can run properly on PHP 7.1, 7.2, 7.3, 7.4, and 8.0.
