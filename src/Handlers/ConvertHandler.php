@@ -31,7 +31,17 @@ class ConvertHandler extends Handler implements HandlerInterface
             }
 
             $tmpFile = $this->getTmpFile();
-            $output = shell_exec($this->optionsToCommand(sprintf(GhostscriptConstant::CONVERT_COMMAND, $this->getConfig()->getBinPath(), $version, $tmpFile, $file)));
+            $output = shell_exec(
+                $this->optionsToCommand(
+                    sprintf(
+                        GhostscriptConstant::CONVERT_COMMAND,
+                        $this->getConfig()->getBinPath(),
+                        $version,
+                        escapeshellarg($tmpFile),
+                        escapeshellarg($file)
+                    )
+                )
+            );
             if ($output) {
                 throw new Exception('Failed to convert ' . $file . ', because ' . $output);
             }

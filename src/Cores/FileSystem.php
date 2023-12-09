@@ -21,7 +21,7 @@ class FileSystem
      */
     public function isDir(string $path): bool
     {
-        return ($path && is_dir(trim(trim($path, '"'), "'")));
+        return ($path && is_dir($path));
     }
 
     /**
@@ -31,6 +31,6 @@ class FileSystem
      */
     public function isFile(string $path): bool
     {
-        return ($path && is_file(trim(trim($path, '"'), "'")));
+        return ($path && is_file($path));
     }
 }

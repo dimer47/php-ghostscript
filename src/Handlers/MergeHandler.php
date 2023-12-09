@@ -26,9 +26,9 @@ class MergeHandler extends Handler implements HandlerInterface
 
     /**
      * @param array ...$arguments
-     * 
+     *
      * @return string
-     * 
+     *
      * @throws Exception
      */
     public function execute(...$arguments): string
@@ -55,7 +55,18 @@ class MergeHandler extends Handler implements HandlerInterface
                 return true;
             });
 
-            $output = shell_exec($this->optionsToCommand(sprintf(GhostscriptConstant::MERGE_COMMAND, $this->getConfig()->getBinPath(), $file, implode(' ', $files))));
+            $output = shell_exec(
+                $this->optionsToCommand(
+                    sprintf(
+                        GhostscriptConstant::MERGE_COMMAND,
+                        $this->getConfig()->getBinPath(),
+                        escapeshellarg($file),
+                        implode(' ', array_map(function ($value) {
+                            return escapeshellarg($value);
+                        }, $files))
+                    )
+                )
+            );
             if ($output) {
                 throw new Exception('Failed to merge ' . $file . ', because ' . $output);
             }

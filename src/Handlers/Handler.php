@@ -28,7 +28,7 @@ class Handler
 
     /**
      * @param Config $config
-     * 
+     *
      * @return void
      */
     public function setConfig(Config $config): void
@@ -46,7 +46,7 @@ class Handler
 
     /**
      * @param array $options
-     * 
+     *
      * @return void
      */
     public function setOptions(array $options): void
@@ -96,8 +96,8 @@ class Handler
 
     /**
      * @param bool $isForceClear
-     * @param int $days
-     * 
+     * @param int  $days
+     *
      * @return void
      */
     public function clearTmpFiles(bool $isForceClear = false, int $days = 7): void
@@ -125,7 +125,7 @@ class Handler
 
     /**
      * @param string $command
-     * 
+     *
      * @return string
      */
     public function optionsToCommand(string $command): string
@@ -133,13 +133,13 @@ class Handler
         $options = $this->getOptions();
 
         return (!empty($options)) ? $command .= ' ' . implode(' ', array_map(function ($key, $value) {
-            return is_numeric($key) ? $value : $key . '=' . $value;
-        }, array_keys($options), $options)) : $command;
+                return is_numeric($key) ? $value : $key . '=' . $value;
+            }, array_keys($options), $options)) : $command;
     }
 
     /**
      * @param string $file
-     * 
+     *
      * @return int
      */
     public function getPdfTotalPage(string $file): int
@@ -153,7 +153,13 @@ class Handler
                 throw new Exception($file . ' is not PDF.');
             }
 
-            $output = shell_exec(sprintf(GhostscriptConstant::TOTAL_PAGE_COMMAND, $this->getConfig()->getBinPath(), $file));
+            $output = shell_exec(
+                sprintf(
+                    GhostscriptConstant::TOTAL_PAGE_COMMAND,
+                    $this->getConfig()->getBinPath(),
+                    $file
+                )
+            );
 
             return ($output) ? (int)$output : 0;
         } catch (Exception $e) {
@@ -165,7 +171,7 @@ class Handler
 
     /**
      * @param string $file
-     * 
+     *
      * @return bool
      */
     public function isPdf(string $file): bool
@@ -174,6 +180,6 @@ class Handler
             return false;
         }
 
-        return (finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file) === 'application/pdf');
+        return (mime_content_type($file) === 'application/pdf');
     }
 }

@@ -12,9 +12,9 @@ class SplitHandler extends Handler implements HandlerInterface
 {
     /**
      * @param array ...$arguments
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws Exception
      */
     public function execute(...$arguments): array
@@ -30,7 +30,18 @@ class SplitHandler extends Handler implements HandlerInterface
             }
 
             (!$this->getConfig()->getFileSystem()->isDir($path)) && mkdir($path, 0755);
-            $output = shell_exec($this->optionsToCommand(sprintf(GhostscriptConstant::SPLIT_COMMAND, $this->getConfig()->getBinPath(), 1, $totalPage, PathHelper::convertPathSeparator($path . GhostscriptConstant::SPLIT_FILENAME), $file)));
+            $output = shell_exec(
+                $this->optionsToCommand(
+                    sprintf(
+                        GhostscriptConstant::SPLIT_COMMAND,
+                        $this->getConfig()->getBinPath(),
+                        1,
+                        $totalPage,
+                        escapeshellarg(PathHelper::convertPathSeparator($path . GhostscriptConstant::SPLIT_FILENAME)),
+                        escapeshellarg($file)
+                    )
+                )
+            );
             if ($output) {
                 throw new Exception('Failed to merge ' . $file . ', because ' . $output);
             }
