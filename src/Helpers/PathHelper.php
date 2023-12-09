@@ -6,11 +6,17 @@ class PathHelper
 {
     /**
      * @param string $path
-     * 
+     *
      * @return string
      */
     public static function convertPathSeparator(string $path): string
     {
-        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+        $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+        if (strpos($path, ' ') !== false) {
+            $path = escapeshellarg($path);
+        }
+
+        return $path;
     }
 }

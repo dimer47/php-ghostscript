@@ -6,8 +6,8 @@ class FileSystem
 {
     /**
      * @param string $path
-     * 
-     * @return string
+     *
+     * @return bool
      */
     public function isValid(string $path): bool
     {
@@ -16,21 +16,21 @@ class FileSystem
 
     /**
      * @param string $path
-     * 
-     * @return string
+     *
+     * @return bool
      */
     public function isDir(string $path): bool
     {
-        return ($path && is_dir($path));
+        return ($path && is_dir(trim(trim($path, '"'), "'")));
     }
 
     /**
      * @param string $path
-     * 
-     * @return string
+     *
+     * @return bool
      */
     public function isFile(string $path): bool
     {
-        return ($path && is_file($path));
+        return ($path && is_file(trim(trim($path, '"'), "'")));
     }
 }
