@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests;
+namespace Tests\Traits;
 
-use PHPUnit\Framework\TestCase;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Traits\MessageTrait;
+use Tests\BaseTest;
 
-class MessageTraitTest extends TestCase
+class MessageTraitTest extends BaseTest
 {
     use MessageTrait;
 

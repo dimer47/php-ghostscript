@@ -3,11 +3,11 @@
 namespace Tests\Configs;
 
 use Exception;
-use PHPUnit\Framework\TestCase;
 use Ordinary9843\Configs\Config;
 use ordinary9843\Cores\FileSystem;
+use Tests\BaseTest;
 
-class ConfigTest extends TestCase
+class ConfigTest extends BaseTest
 {
     /**
      * @return void
@@ -22,7 +22,7 @@ class ConfigTest extends TestCase
      */
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
-        $binPath = '/usr/bin/gs';
+        $binPath = $this->getEnv('GS_BIN_PATH');
         $config = new Config();
         $config->setBinPath($binPath);
         $this->assertEquals($binPath, $config->getBinPath());
@@ -41,6 +41,8 @@ class ConfigTest extends TestCase
 
     /**
      * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     public function testBinPathShouldExist(): void
     {
@@ -54,6 +56,7 @@ class ConfigTest extends TestCase
 
     /**
      * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testBinPathShouldNotExist(): void
     {

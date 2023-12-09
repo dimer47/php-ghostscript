@@ -2,11 +2,11 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Constants\MessageConstant;
+use Tests\BaseTest;
 
-class GuessHandlerTest extends TestCase
+class GuessHandlerTest extends BaseTest
 {
     /**
      * @return void
@@ -15,7 +15,7 @@ class GuessHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $guessHandler = new GuessHandler();
-        $guessHandler->getConfig()->setBinPath('/usr/bin/gs');
+        $guessHandler->getConfig()->setBinPath($this->getEnv('GS_BIN_PATH'));
         $this->assertEquals(1.5, $guessHandler->execute($file));
         $this->assertFileExists($file);
         $this->assertEmpty($guessHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
@@ -28,9 +28,9 @@ class GuessHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/part_4.pdf';
         $guessHandler = new GuessHandler();
-        $guessHandler->getConfig()->setBinPath('/usr/bin/gs');
+        $guessHandler->getConfig()->setBinPath($this->getEnv('GS_BIN_PATH'));
         $this->assertEquals(0.0, $guessHandler->execute($file));
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
         $this->assertNotEmpty($guessHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
     }
 }

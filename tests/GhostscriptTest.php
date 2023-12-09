@@ -4,16 +4,15 @@ namespace Tests;
 
 use Exception;
 use Ordinary9843\Ghostscript;
-use PHPUnit\Framework\TestCase;
 
-class GhostscriptTest extends TestCase
+class GhostscriptTest extends BaseTest
 {
     /**
      * @return void
      */
     public function testConvertWithExistFileShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript('/usr/bin/gs'))->convert(dirname(__DIR__, 2) . '/files/test.pdf', 1.5));
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->convert(dirname(__DIR__, 2) . '/files/test.pdf', 1.5));
     }
 
     /**
@@ -21,7 +20,7 @@ class GhostscriptTest extends TestCase
      */
     public function testGuessWithExistFileShouldSucceed(): void
     {
-        $this->assertIsFloat((new Ghostscript('/usr/bin/gs'))->guess(dirname(__DIR__, 2) . '/files/test.pdf'));
+        $this->assertIsFloat((new Ghostscript($this->getEnv('GS_BIN_PATH')))->guess(dirname(__DIR__, 2) . '/files/test.pdf'));
     }
 
     /**
@@ -29,7 +28,7 @@ class GhostscriptTest extends TestCase
      */
     public function testMergeWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript('/usr/bin/gs'))->merge(dirname(__DIR__, 2) . '/files/test.pdf', [
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 2) . '/files/test.pdf', [
             dirname(__DIR__, 2) . '/files/part_1.pdf',
             dirname(__DIR__, 2) . '/files/part_2.pdf',
             dirname(__DIR__, 2) . '/files/part_3.pdf'
@@ -41,7 +40,7 @@ class GhostscriptTest extends TestCase
      */
     public function testSplitWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsArray((new Ghostscript('/usr/bin/gs'))->split(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split'));
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/test.pdf', dirname(__DIR__, 2) . '/files/split'));
     }
 
     /**
@@ -50,7 +49,7 @@ class GhostscriptTest extends TestCase
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
         $ghostscript = new Ghostscript();
-        $binPath = '/usr/bin/gs';
+        $binPath = $this->getEnv('GS_BIN_PATH');
         $ghostscript->setBinPath($binPath);
         $this->assertEquals($binPath, $ghostscript->getBinPath());
     }

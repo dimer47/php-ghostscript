@@ -2,12 +2,12 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Handlers\Handler;
+use Tests\BaseTest;
 
-class HandlerTest extends TestCase
+class HandlerTest extends BaseTest
 {
     /**
      * @return void
@@ -23,7 +23,7 @@ class HandlerTest extends TestCase
     public function testSetConfigShouldEqualGetConfig(): void
     {
         $config = new Config([
-            'binPath' => '/usr/bin/gs',
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'tmpPath' => sys_get_temp_dir()
         ]);
         $handler = new Handler();
@@ -61,7 +61,7 @@ class HandlerTest extends TestCase
     public function testTmpFileShouldHaveCorrectFormat(): void
     {
         $handler = new Handler();
-        $this->assertStringStartsWith('/tmp/ghostscript_tmp_file_', $handler->getTmpFile());
+        $this->assertStringContainsString('/ghostscript_tmp_file_', $handler->getTmpFile());
         $this->assertStringEndsWith('.pdf', $handler->getTmpFile());
     }
 
@@ -97,7 +97,7 @@ class HandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $config = new Config([
-            'binPath' => '/usr/bin/gs'
+            'binPath' => $this->getEnv('GS_BIN_PATH')
         ]);
         $handler = new Handler($config);
         $this->assertGreaterThan(0, $handler->getPdfTotalPage($file));
@@ -105,6 +105,7 @@ class HandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testGetPdfTotalPageShouldReturnLessThanOrEqualZero(): void
     {
@@ -112,7 +113,7 @@ class HandlerTest extends TestCase
         $fileSystem->method('isFile')->willReturn(false);
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $handler = new Handler(new Config([
-            'binPath' => '/usr/bin/gs',
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'fileSystem' => $fileSystem
         ]));
         $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
@@ -123,8 +124,7 @@ class HandlerTest extends TestCase
         $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
 
         $handler = $this->getMockBuilder(Handler::class)
-            ->setConstructorArgs([new Config(['binPath' => '/usr/bin/gs'])])
-            ->setMethods(['isPdf'])
+            ->onlyMethods(['isPdf'])
             ->getMock();
         $handler->method('isPdf')->willReturn(false);
         $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));

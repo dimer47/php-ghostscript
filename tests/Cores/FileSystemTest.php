@@ -2,10 +2,10 @@
 
 namespace Tests\Cores;
 
-use PHPUnit\Framework\TestCase;
 use ordinary9843\Cores\FileSystem;
+use Tests\BaseTest;
 
-class FileSystemTest extends TestCase
+class FileSystemTest extends BaseTest
 {
     /**
      * @return void

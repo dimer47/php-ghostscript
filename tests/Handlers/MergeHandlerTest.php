@@ -2,12 +2,13 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
+use Exception;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\MergeHandler;
 use Ordinary9843\Constants\MessageConstant;
+use Tests\BaseTest;
 
-class MergeHandlerTest extends TestCase
+class MergeHandlerTest extends BaseTest
 {
     /**
      * @return void
@@ -19,12 +20,13 @@ class MergeHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testExecuteWithExistFileShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $mergeHandler = new MergeHandler();
-        $mergeHandler->getConfig()->setBinPath('/usr/bin/gs');
+        $mergeHandler->getConfig()->setBinPath($this->getEnv('GS_BIN_PATH'));
         $mergeHandler->execute($file, [
             dirname(__DIR__, 2) . '/files/part_1.pdf',
             dirname(__DIR__, 2) . '/files/part_2.pdf',
@@ -36,12 +38,13 @@ class MergeHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $mergeHandler = new MergeHandler();
-        $mergeHandler->getConfig()->setBinPath('/usr/bin/gs');
+        $mergeHandler->getConfig()->setBinPath($this->getEnv('GS_BIN_PATH'));
         $mergeHandler->execute($file, [
             dirname(__DIR__, 2) . '/files/part_1.pdf',
             dirname(__DIR__, 2) . '/files/part_2.pdf',
@@ -54,14 +57,15 @@ class MergeHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $mergeHandler = $this->getMockBuilder(MergeHandler::class)
-            ->setConstructorArgs([new Config(['binPath' => '/usr/bin/gs'])])
-            ->setMethods(['isPdf'])
+            ->onlyMethods(['isPdf', 'getConfig'])
             ->getMock();
+        $mergeHandler->method('getConfig')->willReturn(new Config(['binPath' => $this->getEnv('GS_BIN_PATH')]));
         $mergeHandler->method('isPdf')->willReturn(false);
         $mergeHandler->execute($file, [
             dirname(__DIR__, 2) . '/files/part_1.pdf',
@@ -74,12 +78,13 @@ class MergeHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
      */
     public function testExecuteFailedShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $mergeHandler = new MergeHandler(new Config([
-            'binPath' => '/usr/bin/gs'
+            'binPath' => $this->getEnv('GS_BIN_PATH')
         ]));
         $mergeHandler->setOptions([
             'test' => true

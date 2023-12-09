@@ -2,22 +2,24 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\Exception;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Constants\MessageConstant;
+use Tests\BaseTest;
 
-class ConvertHandlerTest extends TestCase
+class ConvertHandlerTest extends BaseTest
 {
     /**
      * @return void
+     * @throws \Exception
      */
     public function testExecuteWithExistFileShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $convertHandler = new ConvertHandler();
-        $convertHandler->getConfig()->setBinPath('/usr/bin/gs');
+        $convertHandler->getConfig()->setBinPath($this->getEnv('GS_BIN_PATH'));
         $convertHandler->execute($file, 1.5);
         $this->assertFileExists($file);
         $this->assertEmpty($convertHandler->getMessages()[MessageConstant::MESSAGE_TYPE_ERROR]);
@@ -25,6 +27,8 @@ class ConvertHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws Exception
+     * @throws \Exception
      */
     public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
     {
@@ -33,7 +37,7 @@ class ConvertHandlerTest extends TestCase
         $fileSystem->method('isValid')->willReturn(true);
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $convertHandler = new ConvertHandler(new Config([
-            'binPath' => '/usr/bin/gs',
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'fileSystem' => $fileSystem
         ]));
         $convertHandler->execute($file, 1.5);
@@ -43,14 +47,15 @@ class ConvertHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $convertHandler = $this->getMockBuilder(ConvertHandler::class)
-            ->setConstructorArgs([new Config(['binPath' => '/usr/bin/gs'])])
-            ->setMethods(['isPdf'])
+            ->onlyMethods(['isPdf', 'getConfig'])
             ->getMock();
+        $convertHandler->method('getConfig')->willReturn(new Config(['binPath' => $this->getEnv('GS_BIN_PATH')]));
         $convertHandler->method('isPdf')->willReturn(false);
         $convertHandler->execute($file, 1.5);
         $this->assertFileExists($file);
@@ -59,12 +64,13 @@ class ConvertHandlerTest extends TestCase
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function testExecuteFailedShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/test.pdf';
         $convertHandler = new ConvertHandler(new Config([
-            'binPath' => '/usr/bin/gs'
+            'binPath' => $this->getEnv('GS_BIN_PATH')
         ]));
         $convertHandler->setOptions([
             'test' => true
